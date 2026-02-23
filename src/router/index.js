@@ -1,8 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import LayoutTrackerMobilityComponent from "../public/presentation/views/layout-tracker-mobility.component.vue";
-import SignInComponent from "../tracker-mobility/security/pages/sign-in.component.vue";
-import DashboardManagementComponent from "../tracker-mobility/dashboard/pages/dashboard-management.component.vue";
-import {authenticationGuard} from "../tracker-mobility/security/services/authentication.guard.js";
+import SignInComponent from "../6.security/presentation/views/sign-in.vue";
+import {authenticationGuard} from "../6.security/application/authentication.guard.js";
 
 // Importar rutas de módulos con nueva arquitectura (Bounded Contexts)
 import { verifierRoutes } from "../3.verifiers-accounts/presentation/verifier.routes.js";
@@ -61,17 +60,6 @@ const router = createRouter({
 
                 // ============== Rutas de ADMIN ==============
                 //========================================================
-
-                // Dashboard
-                {
-                    path: 'admin/dashboard',
-                    name: 'dashboard',
-                    component: DashboardManagementComponent,
-                    meta: {
-                        title: 'Dashboard',
-                        roles: ['ADMIN', 'MASTER_ADMIN']
-                    }
-                },
 
                 // Órdenes de Verificación (nueva arquitectura - Bounded Context: 1.verification-orders)
                 {

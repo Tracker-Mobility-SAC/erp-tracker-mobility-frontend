@@ -7,7 +7,7 @@ import { OrderRequestHttpRepository } from '../infrastructure/repositories/order
 import { CreateOrderRequestCommand } from '../domain/commands/create-order-request.command.js';
 import { OrderRequestErrorHandler } from './error-handlers/order-request-error.handler.js';
 import { useNotification } from '../../shared-v2/composables/use-notification.js';
-import { useAuthenticationStore } from '../../tracker-mobility/security/services/authentication.store.js';
+import { useAuthenticationStore } from '../../6.security/application/authentication.store.js';
 
 /**
  * Crea un objeto cliente inicial vacío

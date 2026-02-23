@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { SalesTeamHttpRepository } from '../infrastructure/repositories/sales-team-http.repository.js';
-import { useAuthenticationStore } from '../../tracker-mobility/security/services/authentication.store.js';
+import { useAuthenticationStore } from '../../6.security/application/authentication.store.js';
 
 const repository = new SalesTeamHttpRepository();
 

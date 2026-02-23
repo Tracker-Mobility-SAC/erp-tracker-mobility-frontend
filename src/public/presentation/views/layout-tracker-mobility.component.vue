@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import SidebarTrackerMobility from '../components/sidebar-tracker-mobility.component.vue';
-import { useAuthenticationStore } from '../../../tracker-mobility/security/services/authentication.store.js';
+import { useAuthenticationStore } from '../../../6.security/application/authentication.store.js';
 
 // Store
 const authStore = useAuthenticationStore();

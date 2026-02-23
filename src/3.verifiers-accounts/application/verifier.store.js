@@ -6,7 +6,7 @@ import { CreateVerifierCommand } from "../domain/commands/create-verifier.comman
 import { DefaultRole, DefaultStatus } from "../domain/constants/verifier.constants.js";
 import { VerifierErrorHandler } from "./error-handlers/verifier-error.handler.js";
 import { useNotification } from "../../shared-v2/composables/use-notification.js";
-import { useAuthenticationStore } from "../../tracker-mobility/security/services/authentication.store.js";
+import { useAuthenticationStore } from "../../6.security/application/authentication.store.js";
 
 /**
  * Store de Pinia para funcionalidad de verificadores.

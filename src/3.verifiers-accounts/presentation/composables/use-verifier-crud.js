@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router';
 import { useConfirmDialog } from '../../../shared-v2/composables/use-confirm-dialog.js';
 import useVerifierStore from '../../application/verifier.store.js';
 import { UpdateVerifierCommand } from '../../domain/commands/update-verifier.command.js';
-import { useAuthenticationStore } from '../../../tracker-mobility/security/services/authentication.store.js';
+import { useAuthenticationStore } from '../../../6.security/application/authentication.store.js';
 
 /**
  * Composable para gestionar operaciones CRUD de verificadores.

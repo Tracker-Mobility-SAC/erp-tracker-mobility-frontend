@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthenticationStore } from '../../../tracker-mobility/security/services/authentication.store.js'
+import { useAuthenticationStore } from '../../../6.security/application/authentication.store.js'
 
 // Router
 const router = useRouter()
