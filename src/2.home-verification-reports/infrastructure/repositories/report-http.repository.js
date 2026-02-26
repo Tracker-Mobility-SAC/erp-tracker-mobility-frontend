@@ -1,7 +1,7 @@
 import { IReportRepository } from '../../domain/repositories/report.repository.interface.js';
 import { ReportApi } from '../report.api.js';
 import { ReportSummaryAssembler } from '../assemblers/report-summary.assembler.js';
-import { ReportAssembler } from '../report.assembler.js';
+import { ReportAssembler } from '../assemblers/report.assembler.js';
 import { UpdateLandlordInterviewCommandAssembler } from '../assemblers/update-landlord-interview-command.assembler.js';
 import { UpdateReportCommandAssembler } from '../assemblers/update-report-command.assembler.js';
 

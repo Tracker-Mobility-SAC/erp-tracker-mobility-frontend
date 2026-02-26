@@ -1,35 +1,35 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useNotification } from "../../shared-v2/composables/use-notification.js";
-import { getContainer } from "../infrastructure/di-container.js";
-import { SERVICE_KEYS, registerVerificationReportDependencies } from "../infrastructure/module.config.js";
+import { ReportHttpRepository } from "../infrastructure/repositories/report-http.repository.js";
+import { ReportApi } from "../infrastructure/report.api.js";
+import { ReportErrorHandler } from "./error-handlers/report-error.handler.js";
+import { FetchAllReportsUseCase } from "./use-cases/fetch-all-reports.use-case.js";
+import { FetchReportByIdUseCase } from "./use-cases/fetch-report-by-id.use-case.js";
+import { UpdateLandlordInterviewUseCase } from "./use-cases/update-landlord-interview.use-case.js";
+import { UpdateReportUseCase } from "./use-cases/update-report.use-case.js";
+import { DeleteReportUseCase } from "./use-cases/delete-report.use-case.js";
 
 /**
  * Store de Pinia para funcionalidad de reportes de verificación.
- * Refactorizado para usar Dependency Injection Container.
  * Arquitectura: Presentation → Store → Use Cases → Repository → API
- * 
- * LIMPIO: Ya no instancia dependencias directamente, las resuelve desde el container.
  */
 const useVerificationReportStore = defineStore('verificationReport', () => {
     // State
     const verificationReports = ref([]);
 
-    // Obtener notificaciones de Vue
+    // Dependencies
     const notificationService = useNotification();
+    const repository          = new ReportHttpRepository();
+    const errorHandler        = new ReportErrorHandler(notificationService);
+    const api                 = new ReportApi();
 
-    // Inicializar DI Container si no está configurado
-    const container = getContainer();
-    if (!container.has(SERVICE_KEYS.REPORT_REPOSITORY)) {
-        registerVerificationReportDependencies({ notificationService });
-    }
-
-    // Resolver Use Cases desde el container
-    const getFetchAllReportsUseCase = () => container.resolve(SERVICE_KEYS.FETCH_ALL_REPORTS_USE_CASE);
-    const getFetchReportByIdUseCase = () => container.resolve(SERVICE_KEYS.FETCH_REPORT_BY_ID_USE_CASE);
-    const getUpdateLandlordInterviewUseCase = () => container.resolve(SERVICE_KEYS.UPDATE_LANDLORD_INTERVIEW_USE_CASE);
-    const getUpdateReportUseCase = () => container.resolve(SERVICE_KEYS.UPDATE_REPORT_USE_CASE);
-    const getDeleteReportUseCase = () => container.resolve(SERVICE_KEYS.DELETE_REPORT_USE_CASE);
+    // Use Cases
+    const fetchAllUseCase               = new FetchAllReportsUseCase(repository, errorHandler);
+    const fetchByIdUseCase              = new FetchReportByIdUseCase(repository, errorHandler);
+    const updateLandlordInterviewUseCase = new UpdateLandlordInterviewUseCase(repository, errorHandler);
+    const updateReportUseCase           = new UpdateReportUseCase(repository, errorHandler);
+    const deleteReportUseCase           = new DeleteReportUseCase(repository, errorHandler);
 
     /**
      * Obtiene todos los reportes resumidos.
@@ -37,11 +37,8 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
      * @returns {Promise<Object>} Resultado { success, data?, message, code }
      */
     async function fetchAll() {
-        // Limpiar datos SÍNCRONAMENTE antes de cargar
         verificationReports.value = [];
-        
-        const useCase = getFetchAllReportsUseCase();
-        const result = await useCase.execute();
+        const result = await fetchAllUseCase.execute();
         
         if (result.success) {
             verificationReports.value = result.data;
@@ -57,8 +54,7 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
      * @returns {Promise<Object>} Resultado { success, data?, message, code }
      */
     async function fetchById(id) {
-        const useCase = getFetchReportByIdUseCase();
-        const result = await useCase.execute(id);
+        const result = await fetchByIdUseCase.execute(id);
         
         if (!result.success && result.code === 'NOT_FOUND') {
             notificationService.showWarning('Reporte no encontrado', 'No encontrado', 3000);
@@ -74,8 +70,7 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
      * @returns {Promise<Object>} Resultado { success, message, code }
      */
     async function remove(id) {
-        const useCase = getDeleteReportUseCase();
-        const result = await useCase.execute(id);
+        const result = await deleteReportUseCase.execute(id);
         
         if (result.success) {
             // Actualizar estado local
@@ -94,8 +89,7 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
      * @returns {Promise<Object>} Resultado { success, data?, message, code }
      */
     async function updateLandlordInterview(orderId, data) {
-        const useCase = getUpdateLandlordInterviewUseCase();
-        return await useCase.execute(orderId, data);
+        return await updateLandlordInterviewUseCase.execute(orderId, data);
     }
 
     /**
@@ -106,13 +100,7 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
      * @returns {Promise<Object>} Resultado { success, data?, message, code }
      */
     async function updateReport(reportId, data) {
-        const useCase = getUpdateReportUseCase();
-        const result = await useCase.execute(reportId, data);
-        
-        // NOTA: No mostramos notificación aquí porque el componente ya maneja el feedback al usuario
-        // Esto evita notificaciones duplicadas
-        
-        return result;
+        return await updateReportUseCase.execute(reportId, data);
     }
 
     /**
@@ -125,31 +113,11 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
         try {
             const parsedReportId = parseInt(reportId, 10);
             if (!parsedReportId || isNaN(parsedReportId) || parsedReportId <= 0) {
-                return {
-                    success: false,
-                    message: 'ID de reporte inválido',
-                    code: 'INVALID_PARAMS'
-                };
+                return { success: false, message: 'ID de reporte inválido', code: 'INVALID_PARAMS' };
             }
-
-            // Resolver el repositorio desde el container
-            const repository = container.resolve(SERVICE_KEYS.REPORT_REPOSITORY);
-            
-            // Acceder a la API a través del repositorio
-            // (Idealmente esto debería ser un método del repositorio, pero por ahora
-            // accedemos directamente para mantener compatibilidad)
-            const ReportApi = (await import('../infrastructure/report.api.js')).ReportApi;
-            const api = new ReportApi();
             const response = await api.getReportDownloadUrl(parsedReportId);
-
-            return {
-                success: true,
-                data: response.data,
-                message: 'URL obtenida correctamente',
-                code: 'SUCCESS'
-            };
+            return { success: true, data: response.data, message: 'URL obtenida correctamente', code: 'SUCCESS' };
         } catch (error) {
-            const errorHandler = container.resolve(SERVICE_KEYS.ERROR_HANDLER);
             return errorHandler.handle(error, 'obtener la URL de descarga del reporte');
         }
     }

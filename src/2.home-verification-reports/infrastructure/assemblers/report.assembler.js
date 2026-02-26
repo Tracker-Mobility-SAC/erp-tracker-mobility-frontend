@@ -1,4 +1,4 @@
-import { Report } from '../domain/models/report-detail.entity.js';
+import { Report } from '../../domain/models/report-detail.entity.js';
 
 /**
  * Assembler para transformar recursos HTTP de reportes completos a entidades de dominio.
