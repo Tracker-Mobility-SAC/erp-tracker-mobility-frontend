@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Toolbar from '../../../shared/presentation/components/toolbar.vue';
+import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
 import OrderDescription from '../components/order-description.vue';
 import OrderActions from '../components/order-actions.vue';
 import useVerificationOrderStore from '../../application/verification-order.store.js';

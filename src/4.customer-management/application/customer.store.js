@@ -9,7 +9,7 @@ import { CustomerHttpRepository } from '../infrastructure/repositories/customer-
 import { CreateCustomerCommand } from '../domain/commands/create-customer.command.js';
 import { UpdateCustomerCommand } from '../domain/commands/update-customer.command.js';
 import { CustomerErrorHandler } from './error-handlers/customer-error.handler.js';
-import { useNotification } from '../../shared/composables/use-notification.js';
+import { useNotification } from '../../shared-v2/composables/use-notification.js';
 
 /**
  * Store de Pinia para funcionalidad de clientes.

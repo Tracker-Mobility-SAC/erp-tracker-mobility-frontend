@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthenticationStore } from '../../application/authentication.store.js';
 import { SignInRequest } from '../../domain/models/sign-in.request.js';
-import { useNotification } from '../../../shared/composables/use-notification.js';
+import { useNotification } from '../../../shared-v2/composables/use-notification.js';
 
 const router = useRouter();
 const route  = useRoute();

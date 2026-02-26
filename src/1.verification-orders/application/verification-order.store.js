@@ -4,7 +4,7 @@ import { OrderHttpRepository } from "../infrastructure/repositories/order-http.r
 import { AssignVerifierCommand } from "../domain/commands/assign-verifier.command.js";
 import { CreateObservationCommand } from "../domain/commands/create-observation.command.js";
 import { VerificationOrderErrorHandler } from "./error-handlers/verification-order-error.handler.js";
-import { useNotification } from "../../shared/composables/use-notification.js";
+import { useNotification } from "../../shared-v2/composables/use-notification.js";
 
 /**
  * Store de Pinia para funcionalidad de órdenes de verificación.

@@ -5,7 +5,7 @@ import { useToast } from 'primevue/usetoast';
 import { useCustomerStore } from '../../application/customer.store.js';
 import { useCustomerCrud } from '../composables/use-customer-crud.js';
 import CustomerCreateAndEdit from '../components/customer-create-and-edit.vue';
-import Toolbar from '../../../shared/presentation/components/toolbar.vue';
+import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
 import {
     StatusTranslations,
     StatusFilterOptions,

@@ -3,8 +3,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
 import { useOrderRequestStore } from '../../../0.verification-order-requests/application/order-request.store.js';
 import { useSalesTeamStore } from '../../application/sales-team.store.js';
-import Toolbar from '../../../shared/presentation/components/toolbar.vue';
-import { DateFormatter } from '../../../shared/utils/date-formatter.js';
+import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
+import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 import { StatusTranslations } from '../../../0.verification-order-requests/presentation/constants/order-request-ui.constants.js';
 
 const route = useRoute();

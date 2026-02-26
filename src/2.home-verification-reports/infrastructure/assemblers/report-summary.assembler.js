@@ -30,21 +30,4 @@ export class ReportSummaryAssembler {
     return dtos.map(dto => this.toEntity(dto)).filter(entity => entity !== null);
   }
 
-  /**
-   * Convierte una entidad a un DTO (si es necesario para actualizaciones).
-   */
-  static toDto(entity) {
-    if (!entity) return null;
-
-    return {
-      reportId: entity.reportId,
-      reportCode: entity.reportCode,
-      finalResult: entity.finalResult,
-      isResultValid: entity.isResultValid,
-      orderCode: entity.orderCode,
-      requestDate: entity.requestDate,
-      clientName: entity.clientName,
-      companyName: entity.companyName
-    };
-  }
 }

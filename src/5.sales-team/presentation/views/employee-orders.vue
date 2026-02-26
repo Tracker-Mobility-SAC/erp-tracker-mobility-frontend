@@ -4,9 +4,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { useSalesTeamStore } from '../../application/sales-team.store.js';
 import { useOrderRequestStore } from '../../../0.verification-order-requests/application/order-request.store.js';
 import { StatusTranslations, StatusFilterOptions } from '../../../0.verification-order-requests/presentation/constants/order-request-ui.constants.js';
-import Toolbar from '../../../shared/presentation/components/toolbar.vue';
-import DataManager from '../../../shared/presentation/components/data-manager.vue';
-import { DateFormatter } from '../../../shared/utils/date-formatter.js';
+import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
+import DataManager from '../../../shared-v2/presentation/components/data-manager.vue';
+import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 
 // Router y Store
 const route = useRoute();

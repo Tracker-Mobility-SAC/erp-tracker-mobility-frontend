@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
-import CreateAndEdit from '../../../shared/presentation/components/create-and-edit.vue';
+import CreateAndEdit from '../../../shared-v2/presentation/components/create-and-edit.vue';
 
 const props = defineProps({
   visible: {

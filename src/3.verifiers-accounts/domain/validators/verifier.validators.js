@@ -2,7 +2,7 @@ import { Email } from '../value-objects/email.vo.js';
 import { PhoneNumber } from '../value-objects/phone-number.vo.js';
 import { WorkSchedule } from '../value-objects/work-schedule.vo.js';
 import { BusinessRules, VerifierMessages } from '../constants/verifier.constants.js';
-import { useInputValidation } from '../../../shared/composables/use-input-validation.js';
+import { useInputValidation } from '../../../shared-v2/composables/use-input-validation.js';
 
 // Instanciar validadores compartidos una sola vez
 const { isValidEmail, validateRequired } = useInputValidation();

@@ -1,6 +1,6 @@
 import { AttachedDocument } from './attached-document.entity.js';
 import { Observation } from './observation.entity.js';
-import { DateFormatter } from '../../../shared/utils/date-formatter.js';
+import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 
 /**
  * Entidad de dominio: OrderDetail

@@ -2,7 +2,7 @@
  * Validadores del dominio para clientes.
  * Patrón híbrido: combina validaciones compartidas con reglas de dominio específicas
  */
-import { useInputValidation } from '../../../shared/composables/use-input-validation.js';
+import { useInputValidation } from '../../../shared-v2/composables/use-input-validation.js';
 import { CustomerMessages, EmployeeCollaboratorMessages, BusinessRules } from '../constants/customer.constants.js';
 import { Ruc } from '../value-objects/ruc.vo.js';
 import { Email } from '../value-objects/email.vo.js';

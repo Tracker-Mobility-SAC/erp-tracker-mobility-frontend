@@ -2,14 +2,14 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useOrderRequestStore } from '../../application/order-request.store.js';
-import { useNotification } from '../../../shared/composables/use-notification.js';
-import { useImageViewer } from '../../../shared/composables/use-image-viewer.js';
-import { DateFormatter } from '../../../shared/utils/date-formatter.js';
+import { useNotification } from '../../../shared-v2/composables/use-notification.js';
+import { useImageViewer } from '../../../shared-v2/composables/use-image-viewer.js';
+import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 import { OrderRequestStatus, ObservationType } from '../../domain/constants/order-request.constants.js';
 import { StatusTranslations, StatusCssClasses, ObservationTypeTranslations, ObservationTypeIcons } from '../constants/order-request-ui.constants.js';
 import { OrderRequestApi } from '../../infrastructure/order-request.api.js'; // Importación temporal para métodos específicos de actualización
-import Toolbar from '../../../shared/presentation/components/toolbar.vue';
-import ImageViewerModal from '../../../shared/presentation/components/image-viewer-modal.vue';
+import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
+import ImageViewerModal from '../../../shared-v2/presentation/components/image-viewer-modal.vue';
 
 const route = useRoute();
 const router = useRouter();

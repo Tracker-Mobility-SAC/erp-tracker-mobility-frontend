@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { useNotification } from "../../shared/composables/use-notification.js";
+import { useNotification } from "../../shared-v2/composables/use-notification.js";
 import { getContainer } from "../infrastructure/di-container.js";
 import { SERVICE_KEYS, registerVerificationReportDependencies } from "../infrastructure/module.config.js";
 

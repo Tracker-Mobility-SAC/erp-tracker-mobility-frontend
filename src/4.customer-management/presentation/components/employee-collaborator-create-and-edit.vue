@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue';
 import { EmployeeCollaboratorValidators } from '../../domain/validators/customer.validators.js';
 import { RoleOptions } from '../constants/customer-ui.constants.js';
-import CreateAndEdit from '../../../shared/presentation/components/create-and-edit.vue';
+import CreateAndEdit from '../../../shared-v2/presentation/components/create-and-edit.vue';
 
 const props = defineProps({
     edit: Boolean,

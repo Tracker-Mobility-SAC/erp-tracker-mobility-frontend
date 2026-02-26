@@ -80,13 +80,6 @@ export class DIContainer {
   }
 
   /**
-   * Limpia todas las instancias singleton (útil para testing)
-   */
-  clearSingletons() {
-    this.#singletons.clear();
-  }
-
-  /**
    * Limpia todos los servicios registrados
    */
   clear() {
@@ -94,15 +87,6 @@ export class DIContainer {
     this.#singletons.clear();
   }
 
-  /**
-   * Obtiene una lista de todas las keys registradas
-   * @returns {string[]}
-   */
-  getRegisteredKeys() {
-    const serviceKeys = Array.from(this.#services.keys());
-    const singletonKeys = Array.from(this.#singletons.keys());
-    return [...new Set([...serviceKeys, ...singletonKeys])];
-  }
 }
 
 // Instancia global del container (singleton)
@@ -119,20 +103,4 @@ export function getContainer() {
   return globalContainer;
 }
 
-/**
- * Reemplaza el container global (útil para testing)
- * @param {DIContainer} container
- */
-export function setContainer(container) {
-  if (!(container instanceof DIContainer)) {
-    throw new Error('El container debe ser una instancia de DIContainer');
-  }
-  globalContainer = container;
-}
 
-/**
- * Resetea el container global
- */
-export function resetContainer() {
-  globalContainer = null;
-}

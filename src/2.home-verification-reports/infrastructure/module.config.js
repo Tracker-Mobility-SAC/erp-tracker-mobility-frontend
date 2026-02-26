@@ -113,11 +113,3 @@ export function registerVerificationReportDependencies(externalDependencies = {}
   );
 }
 
-/**
- * Limpia todas las dependencias registradas
- * Útil para testing o reconfiguración
- */
-export function clearVerificationReportDependencies() {
-  const container = getContainer();
-  container.clear();
-}

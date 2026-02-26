@@ -29,12 +29,4 @@ export class UpdateReportCommandAssembler {
         
         return resource;
     }
-    
-    /**
-     * Alias para compatibilidad con código existente.
-     * @deprecated Usar toResource() en su lugar
-     */
-    static toResourceFromCommand(command) {
-        return this.toResource(command);
-    }
 }

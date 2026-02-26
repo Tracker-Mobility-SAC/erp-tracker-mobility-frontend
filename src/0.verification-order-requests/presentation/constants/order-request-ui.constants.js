@@ -1,5 +1,5 @@
 import { OrderRequestStatus, ObservationStatus, ObservationType, DocumentType } from '../../domain/constants/order-request.constants.js';
-import { DateFormatter } from '../../../shared/utils/date-formatter.js';
+import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 
 /**
  * Constantes de presentación para solicitudes de orden.

@@ -1,5 +1,5 @@
 import { OrderRequestStatus, ObservationStatus, OrderRequestMessages } from '../constants/order-request.constants.js';
-import { DateFormatter } from '../../../shared/utils/date-formatter.js';
+import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 
 /**
  * Entidad de detalle completo de solicitud de orden de verificación.

@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import { DateFormatter } from '../../../shared/utils/date-formatter.js';
+import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 
 const props = defineProps({
   // Datos del Solicitante (Empresa)

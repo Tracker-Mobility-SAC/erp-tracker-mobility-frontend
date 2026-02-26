@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useOrderRequestStore } from '../../application/order-request.store.js';
 import { useToast } from 'primevue/usetoast';
-import { DateFormatter } from '../../../shared/utils/date-formatter.js';
+import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 
 // Store & Toast
 const store = useOrderRequestStore();
