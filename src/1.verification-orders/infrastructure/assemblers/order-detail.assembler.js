@@ -51,9 +51,6 @@ export class OrderDetailAssembler {
    * @param {Array<Object>} apiDataArray - Array de datos desde la API
    * @returns {Array<OrderDetail>}
    */
-  static toEntities(apiDataArray) {
-    if (!Array.isArray(apiDataArray)) return [];
-    return apiDataArray.map(data => this.toEntity(data)).filter(Boolean);
-  }
 }
+
 

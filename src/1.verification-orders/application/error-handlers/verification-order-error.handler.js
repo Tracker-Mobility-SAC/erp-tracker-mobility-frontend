@@ -240,32 +240,6 @@ export class VerificationOrderErrorHandler {
     // this.monitoringService.captureException(error, { context });
   }
 
-  /**
-   * Maneja múltiples errores (para operaciones batch).
-   * @param {Array<Error>} errors - Array de errores
-   * @param {string} context - Contexto de la operación
-   * @returns {Object} Resultado con resumen de errores
-   */
-  handleMultiple(errors, context = 'operación múltiple') {
-    const results = errors.map(error => this.handle(error, context));
-    
-    const successCount = results.filter(r => r.success).length;
-    const failureCount = results.filter(r => !r.success).length;
-    
-    if (failureCount > 0) {
-      this.notificationService.showWarning(
-        `${failureCount} de ${errors.length} operaciones fallaron`,
-        'Operación parcial',
-        4000
-      );
-    }
-
-    return {
-      success: failureCount === 0,
-      successCount,
-      failureCount,
-      results
-    };
-  }
 }
+
 

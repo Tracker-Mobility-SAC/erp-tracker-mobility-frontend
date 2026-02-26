@@ -147,18 +147,3 @@ export const StatusFilterOptions = Object.freeze([
   }))
 ]);
 
-/**
- * Acciones disponibles en el DataManager
- */
-export const DataManagerActions = Object.freeze({
-  CREATE: 'create',
-  EDIT: 'edit',
-  DELETE: 'delete',
-  ASSIGN: 'assign',
-  VIEW: 'view'
-});
-
-/**
- * Etiquetas UI para el módulo (legacy)
- */
-export const VerificationOrderUILabels = UILabels;
