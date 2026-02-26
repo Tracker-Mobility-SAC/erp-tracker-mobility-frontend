@@ -64,7 +64,11 @@ const props = defineProps({
   // Configuración de paginación
   rows: { type: Number, default: 10 },
   rowsPerPageOptions: { type: Array, default: () => [10, 20, 30, 50] },
-  
+
+  // Paginación lazy (server-side)
+  lazy: { type: Boolean, default: false },
+  totalRecords: { type: Number, default: 0 },
+
   // Labels de botones principales
   newButtonLabel: { type: String, default: 'Agregar' },
   deleteButtonLabel: { type: String, default: 'Eliminar' },
@@ -98,7 +102,8 @@ const emit = defineEmits([
   'global-filter-change',
   'clear-filters',
   'row-select',
-  'row-unselect'
+  'row-unselect',
+  'page-change'
 ])
 
 // ===========================
@@ -244,6 +249,16 @@ const onRowSelect = (event) => emit('row-select', event)
  */
 const onRowUnselect = (event) => emit('row-unselect', event)
 
+/**
+ * Maneja el evento de cambio de página.
+ * En modo lazy lo delega al padre para cargar datos del servidor.
+ */
+const onPageChange = (event) => {
+  if (props.lazy) {
+    emit('page-change', { page: event.page, rows: event.rows, first: event.first })
+  }
+}
+
 // ===========================
 // LIFECYCLE HOOKS
 // ===========================
@@ -320,14 +335,16 @@ onMounted(() => initFilters())
         ref="dt"
         v-model:selection="selectedItems"
         :value="displayItems"
-        :filters="filteredItems ? null : filters"
+        :filters="(filteredItems || lazy) ? null : filters"
         :loading="loading"
         :paginator="true"
         :rows="rows"
         :rows-per-page-options="rowsPerPageOptions"
+        :lazy="lazy"
+        :total-records="lazy ? totalRecords : undefined"
         scrollable
         scroll-height="flex"
-        :global-filter-fields="filteredItems ? [] : columns.map(col => col.field)"
+        :global-filter-fields="(filteredItems || lazy) ? [] : columns.map(col => col.field)"
         data-key="id"
         paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         current-page-report-template="Mostrando {first} - {last} de {totalRecords} órdenes"
@@ -335,6 +352,7 @@ onMounted(() => initFilters())
         hover
         @row-select="onRowSelect"
         @row-unselect="onRowUnselect"
+        @page="onPageChange"
         class="data-table-custom"
       >
         <!-- Selection Column -->

@@ -26,6 +26,16 @@ export class IReportRepository {
   }
 
   /**
+   * Obtiene reportes paginados y filtrados del servidor.
+   * @param {Object} params - { page, size, finalResult?, isResultValid?, search? }
+   * @returns {Promise<Object>} { items, totalElements, totalPages, currentPage, pageSize }
+   * @throws {Error} Method not implemented
+   */
+  async findPaginated(params) {
+    throw new Error('Method not implemented: findPaginated');
+  }
+
+  /**
    * Actualiza la entrevista con el arrendador.
    * @param {UpdateLandlordInterviewCommand} command - Command con datos de la entrevista
    * @returns {Promise<Object>} Respuesta de la actualización

@@ -5,6 +5,7 @@ import { ReportHttpRepository } from "../infrastructure/repositories/report-http
 import { ReportApi } from "../infrastructure/report.api.js";
 import { ReportErrorHandler } from "./error-handlers/report-error.handler.js";
 import { FetchAllReportsUseCase } from "./use-cases/fetch-all-reports.use-case.js";
+import { FetchPaginatedReportsUseCase } from "./use-cases/fetch-paginated-reports.use-case.js";
 import { FetchReportByIdUseCase } from "./use-cases/fetch-report-by-id.use-case.js";
 import { UpdateLandlordInterviewUseCase } from "./use-cases/update-landlord-interview.use-case.js";
 import { UpdateReportUseCase } from "./use-cases/update-report.use-case.js";
@@ -18,6 +19,10 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
     // State
     const verificationReports = ref([]);
 
+    // Paginated-mode state
+    const paginatedReports = ref([]);
+    const totalElements    = ref(0);
+
     // Dependencies
     const notificationService = useNotification();
     const repository          = new ReportHttpRepository();
@@ -26,6 +31,7 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
 
     // Use Cases
     const fetchAllUseCase               = new FetchAllReportsUseCase(repository, errorHandler);
+    const fetchPaginatedUseCase         = new FetchPaginatedReportsUseCase(repository, errorHandler);
     const fetchByIdUseCase              = new FetchReportByIdUseCase(repository, errorHandler);
     const updateLandlordInterviewUseCase = new UpdateLandlordInterviewUseCase(repository, errorHandler);
     const updateReportUseCase           = new UpdateReportUseCase(repository, errorHandler);
@@ -44,6 +50,23 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
             verificationReports.value = result.data;
         }
         
+        return result;
+    }
+
+    /**
+     * Obtiene reportes paginados con filtros del servidor.
+     * Actualiza paginatedReports y totalElements.
+     * @param {Object} params - { page, size, finalResult?, isResultValid?, search? }
+     * @returns {Promise<Object>} Resultado { success, data?, message, code }
+     */
+    async function fetchPaginated({ page = 0, size = 10, finalResult, isResultValid, search } = {}) {
+        const result = await fetchPaginatedUseCase.execute({ page, size, finalResult, isResultValid, search });
+
+        if (result.success) {
+            paginatedReports.value = result.data.items;
+            totalElements.value    = result.data.totalElements;
+        }
+
         return result;
     }
 
@@ -124,7 +147,10 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
 
     return {
         verificationReports,
+        paginatedReports,
+        totalElements,
         fetchAll,
+        fetchPaginated,
         fetchById,
         remove,
         updateLandlordInterview,

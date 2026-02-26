@@ -31,4 +31,7 @@ export class ReportSummary {
     this.companyName = companyName;
   }
 
+  /** Alias requerido por PrimeVue DataTable (data-key="id") */
+  get id() { return this.reportId; }
+
 }

@@ -28,6 +28,25 @@ export class ReportApi extends BaseApi {
   }
 
   /**
+   * Obtiene reportes paginados con filtros opcionales del lado del servidor.
+   * GET /api/v1/web/reports/paginated/filtered
+   * @param {Object} params
+   * @param {number} params.page    - Número de página (0-indexed, requerido)
+   * @param {number} params.size    - Tamaño de página (requerido)
+   * @param {string} [params.finalResult]    - Filtro por resultado final
+   * @param {boolean} [params.isResultValid] - Filtro por validez del resultado
+   * @param {string} [params.search]         - Búsqueda global (reportCode, orderCode, clientName, companyName)
+   * @returns {Promise} Página con content, totalElements, totalPages, number, size
+   */
+  getPaginatedFiltered({ page, size, finalResult, isResultValid, search } = {}) {
+    const params = { page, size };
+    if (finalResult) params.finalResult = finalResult;
+    if (isResultValid !== undefined && isResultValid !== null) params.isResultValid = isResultValid;
+    if (search && search.trim()) params.search = search.trim();
+    return this.http.get(`${reportEndpointPath}/paginated/filtered`, { params });
+  }
+
+  /**
    * Obtiene un reporte completo por ID.
    * GET /api/v1/web/reports/{id}
    * @param {string|number} id - El ID del reporte.

@@ -30,6 +30,23 @@ export class ReportHttpRepository extends IReportRepository {
   }
 
   /**
+   * Obtiene reportes paginados con filtros opcionales del servidor.
+   * @param {Object} params - { page, size, finalResult?, isResultValid?, search? }
+   * @returns {Promise<Object>} { items, totalElements, totalPages, currentPage, pageSize }
+   */
+  async findPaginated({ page = 0, size = 10, finalResult, isResultValid, search } = {}) {
+    const response = await this.#api.getPaginatedFiltered({ page, size, finalResult, isResultValid, search });
+    const data = response.data;
+    return {
+      items:         ReportSummaryAssembler.toEntities(data.content || []),
+      totalElements: data.totalElements ?? 0,
+      totalPages:    data.totalPages    ?? 0,
+      currentPage:   data.currentPage   ?? page,
+      pageSize:      data.pageSize      ?? size
+    };
+  }
+
+  /**
    * Obtiene un reporte completo por ID.
    * @param {number} id - ID del reporte
    * @returns {Promise<Report>} Reporte encontrado
