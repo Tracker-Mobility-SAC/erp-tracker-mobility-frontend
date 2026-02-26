@@ -1,5 +1,5 @@
-import { BaseApi } from "../../shared-v2/infrastructure/base-api.js";
-import { BaseEndpoint } from "../../shared-v2/infrastructure/base-endpoint.js";
+import { BaseApi } from "../../shared/infrastructure/base-api.js";
+import { BaseEndpoint } from "../../shared/infrastructure/base-endpoint.js";
 import { CreateCustomerCommandAssembler } from "./assemblers/create-customer-command.assembler.js";
 import { UpdateCustomerCommandAssembler } from "./assemblers/update-customer-command.assembler.js";
 

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue';
 import { VerifierValidators } from '../../domain/validators/verifier.validators.js';
-import CreateAndEdit from "../../../shared-v2/presentation/components/create-and-edit.vue";
+import CreateAndEdit from "../../../shared/presentation/components/create-and-edit.vue";
 
 const props = defineProps({
   verifier: {

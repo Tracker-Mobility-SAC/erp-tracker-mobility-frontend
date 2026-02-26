@@ -1,8 +1,8 @@
 // Order Request API Service
 // Infrastructure layer - HTTP client for order requests
 
-import { BaseApi } from '../../shared-v2/infrastructure/base-api.js';
-import { BaseEndpoint } from '../../shared-v2/infrastructure/base-endpoint.js';
+import { BaseApi } from '../../shared/infrastructure/base-api.js';
+import { BaseEndpoint } from '../../shared/infrastructure/base-endpoint.js';
 
 /**
  * Servicio API para gestionar solicitudes de órdenes de verificación.

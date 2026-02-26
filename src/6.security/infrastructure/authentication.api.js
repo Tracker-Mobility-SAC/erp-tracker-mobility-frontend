@@ -1,4 +1,4 @@
-import { BaseApi } from '../../shared-v2/infrastructure/base-api.js';
+import { BaseApi } from '../../shared/infrastructure/base-api.js';
 
 /**
  * AuthenticationApi

@@ -1,4 +1,4 @@
-import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
+import { DateFormatter } from '../../../shared/utils/date-formatter.js';
 
 /**
  * Entidad de dominio: ServiceOrderSummary

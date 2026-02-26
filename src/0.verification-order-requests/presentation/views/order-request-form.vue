@@ -9,7 +9,7 @@ import CustomerData from '../components/1-customer-data.vue';
 import AddressData from '../components/2-address-data.vue';
 import SupportDocsLandlord from '../components/3-support-docs-landlord.vue';
 import Resumen from '../components/4-resumen.vue';
-import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
+import Toolbar from '../../../shared/presentation/components/toolbar.vue';
 
 const router = useRouter();
 const store = useOrderRequestStore();

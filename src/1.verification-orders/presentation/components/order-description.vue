@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { useNotification } from '../../../shared-v2/composables/use-notification.js';
-import { useImageViewer } from '../../../shared-v2/composables/use-image-viewer.js';
-import ImageViewerModal from '../../../shared-v2/presentation/components/image-viewer-modal.vue';
+import { useNotification } from '../../../shared/composables/use-notification.js';
+import { useImageViewer } from '../../../shared/composables/use-image-viewer.js';
+import ImageViewerModal from '../../../shared/presentation/components/image-viewer-modal.vue';
 
 // Props
 const props = defineProps({

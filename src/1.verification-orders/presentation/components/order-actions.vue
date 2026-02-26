@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
 import useVerificationOrderStore from '../../application/verification-order.store.js';
-import { useNotification } from '../../../shared-v2/composables/use-notification.js';
-import { useDateFormatter } from '../../../shared-v2/composables/use-date-formatter.js';
+import { useNotification } from '../../../shared/composables/use-notification.js';
+import { useDateFormatter } from '../../../shared/composables/use-date-formatter.js';
 import { 
   OrderStatusClasses as StatusClasses,
   OrderStatusIcons as StatusIcons

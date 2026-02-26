@@ -5,8 +5,8 @@ import { useSalesTeamStore } from '../../application/sales-team.store.js';
 import { useCustomerStore } from '../../../4.customer-management/application/customer.store.js';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from 'primevue/useconfirm';
-import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
-import DataManager from '../../../shared-v2/presentation/components/data-manager.vue';
+import Toolbar from '../../../shared/presentation/components/toolbar.vue';
+import DataManager from '../../../shared/presentation/components/data-manager.vue';
 import SellerCreateAndEdit from '../components/seller-create-and-edit.vue';
 
 const router = useRouter();

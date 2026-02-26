@@ -3,9 +3,9 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { useConfirm } from 'primevue/useconfirm';
 import useVerificationReportStore from '../../application/verification-report.store.js';
-import { useNotification } from '../../../shared-v2/composables/use-notification.js';
+import { useNotification } from '../../../shared/composables/use-notification.js';
 import { ReportApi } from '../../infrastructure/report.api.js';
-import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
+import Toolbar from '../../../shared/presentation/components/toolbar.vue';
 
 // Import all report card components
 import VerificationInfoCard from '../components/verification-info-card.vue';

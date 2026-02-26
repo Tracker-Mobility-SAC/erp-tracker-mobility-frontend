@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue';
 import { useConfirm } from 'primevue/useconfirm';
-import { useNotification } from '../../../shared-v2/composables/use-notification.js';
+import { useNotification } from '../../../shared/composables/use-notification.js';
 
 const props = defineProps({
   clientNameAccordingToLandlord: {

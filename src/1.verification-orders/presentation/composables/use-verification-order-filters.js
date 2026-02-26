@@ -1,5 +1,5 @@
 import { computed, ref, unref } from 'vue';
-import { DateValidator } from '../../../shared-v2/utils/date-validator.js';
+import { DateValidator } from '../../../shared/utils/date-validator.js';
 
 /**
  * Composable para gestionar filtros de órdenes de verificación.

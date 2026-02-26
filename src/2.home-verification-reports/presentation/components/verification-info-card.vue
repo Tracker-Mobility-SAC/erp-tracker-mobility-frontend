@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
+import { DateFormatter } from '../../../shared/utils/date-formatter.js';
 
 // Props
 const props = defineProps({

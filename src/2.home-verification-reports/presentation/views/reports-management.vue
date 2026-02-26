@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import DataManager from '../../../shared-v2/presentation/components/data-manager.vue';
+import DataManager from '../../../shared/presentation/components/data-manager.vue';
 import useVerificationReportStore from '../../application/verification-report.store.js';
 import { useVerificationReportCrud } from '../composables/use-verification-report-crud.js';
 import { useVerificationReportFilters } from '../composables/use-verification-report-filters.js';
@@ -10,8 +10,8 @@ import {
   StatusClassMap,
   VerificationReportUILabels
 } from '../constants/verification-report-ui.constants.js';
-import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
-import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
+import Toolbar from '../../../shared/presentation/components/toolbar.vue';
+import { DateFormatter } from '../../../shared/utils/date-formatter.js';
 
 // Store
 const reportStore = useVerificationReportStore();

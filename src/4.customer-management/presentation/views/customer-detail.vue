@@ -5,8 +5,8 @@ import { useCustomerStore } from '../../application/customer.store.js';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import EmployeeCollaboratorCreateAndEdit from '../components/employee-collaborator-create-and-edit.vue';
-import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
-import DataManager from '../../../shared-v2/presentation/components/data-manager.vue';
+import Toolbar from '../../../shared/presentation/components/toolbar.vue';
+import DataManager from '../../../shared/presentation/components/data-manager.vue';
 import {
     StatusTranslations,
     StatusFilterOptions,

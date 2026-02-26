@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import DataManager from '../../../shared-v2/presentation/components/data-manager.vue';
+import DataManager from '../../../shared/presentation/components/data-manager.vue';
 import VerifierCreateAndEdit from "../components/verifier-create-and-edit.vue";
 import useVerifierStore from "../../application/verifier.store.js";
 import { useVerifierCrud } from "../composables/use-verifier-crud.js";
@@ -12,7 +12,7 @@ import {
   StatusClassMap,
   VerifierUILabels
 } from "../constants/verifier-ui.constants.js";
-import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
+import Toolbar from '../../../shared/presentation/components/toolbar.vue';
 
 // Store
 const verifierStore = useVerifierStore();

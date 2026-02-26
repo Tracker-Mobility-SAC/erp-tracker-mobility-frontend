@@ -5,7 +5,7 @@ import { AdminHttpRepository } from "../infrastructure/repositories/admin-http.r
 import { CreateVerifierCommand } from "../domain/commands/create-verifier.command.js";
 import { DefaultRole, DefaultStatus } from "../domain/constants/verifier.constants.js";
 import { VerifierErrorHandler } from "./error-handlers/verifier-error.handler.js";
-import { useNotification } from "../../shared-v2/composables/use-notification.js";
+import { useNotification } from "../../shared/composables/use-notification.js";
 import { useAuthenticationStore } from "../../6.security/application/authentication.store.js";
 
 /**

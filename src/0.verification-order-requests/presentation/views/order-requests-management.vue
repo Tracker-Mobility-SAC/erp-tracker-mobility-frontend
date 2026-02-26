@@ -3,9 +3,9 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useOrderRequestStore } from '../../application/order-request.store.js';
 import { StatusTranslations, StatusFilterOptions } from '../constants/order-request-ui.constants.js';
-import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
-import DataManager from '../../../shared-v2/presentation/components/data-manager.vue';
-import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
+import Toolbar from '../../../shared/presentation/components/toolbar.vue';
+import DataManager from '../../../shared/presentation/components/data-manager.vue';
+import { DateFormatter } from '../../../shared/utils/date-formatter.js';
 
 // Router y Store
 const router = useRouter();

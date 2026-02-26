@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useNotification } from '../../../shared-v2/composables/use-notification.js';
+import { useNotification } from '../../../shared/composables/use-notification.js';
 import { useConfirm } from 'primevue/useconfirm';
-import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
+import Toolbar from '../../../shared/presentation/components/toolbar.vue';
 import VerifierDataCard from "../components/verifier-data-card.vue";
 import VerifierAssignedOrdersList from "../components/verifier-assigned-orders-list.vue";
 import useVerifierStore from "../../application/verifier.store.js";

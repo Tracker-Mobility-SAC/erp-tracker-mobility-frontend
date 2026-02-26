@@ -2,9 +2,9 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useOrderRequestStore } from '../../application/order-request.store.js';
 import { useToast } from 'primevue/usetoast';
-import { useConfirmDialog } from '../../../shared-v2/composables/use-confirm-dialog.js';
-import { useInputValidation } from '../../../shared-v2/composables/use-input-validation.js';
-import FileUploader from '../../../shared-v2/presentation/components/file-uploader.vue';
+import { useConfirmDialog } from '../../../shared/composables/use-confirm-dialog.js';
+import { useInputValidation } from '../../../shared/composables/use-input-validation.js';
+import FileUploader from '../../../shared/presentation/components/file-uploader.vue';
 
 // Store, Toast, Confirm Dialog & Composables
 const store = useOrderRequestStore();

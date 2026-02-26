@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useOrderRequestStore } from '../../application/order-request.store.js';
-import { useInputValidation } from '../../../shared-v2/composables/use-input-validation.js';
+import { useInputValidation } from '../../../shared/composables/use-input-validation.js';
 
 // Store & Composables
 const store = useOrderRequestStore();

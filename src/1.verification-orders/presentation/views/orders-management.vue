@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
-import DataManager from '../../../shared-v2/presentation/components/data-manager.vue';
+import Toolbar from '../../../shared/presentation/components/toolbar.vue';
+import DataManager from '../../../shared/presentation/components/data-manager.vue';
 import useVerificationOrderStore from '../../application/verification-order.store.js';
 import { useVerificationOrderFilters } from '../composables/use-verification-order-filters.js';
 import { 

@@ -1,5 +1,5 @@
 import { OrderMessages } from '../constants/verification-order.constants.js';
-import { DateValidator } from '../../../shared-v2/utils/date-validator.js';
+import { DateValidator } from '../../../shared/utils/date-validator.js';
 
 /**
  * Command para asignar un verificador a una orden.
