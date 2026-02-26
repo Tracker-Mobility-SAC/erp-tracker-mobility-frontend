@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue';
 import useVerificationOrderStore from '../../application/verification-order.store.js';
 import { useNotification } from '../../../shared-v2/composables/use-notification.js';
 import { useDateFormatter } from '../../../shared-v2/composables/use-date-formatter.js';
+import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 import { 
   OrderStatusClasses as StatusClasses,
   OrderStatusIcons as StatusIcons
@@ -151,11 +152,24 @@ const hasNextPage = computed(() => {
 });
 
 // Métodos
+function parseTimeStringToDate(timeString) {
+  if (!timeString) return null;
+  if (timeString instanceof Date) return timeString;
+  const parts = String(timeString).split(':');
+  if (parts.length < 2) return null;
+  const d = new Date();
+  d.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
+  return isNaN(d.getTime()) ? null : d;
+}
+
 function initializeLocalData() {
+  const rawDate = props.item.visitDate;
+  const rawTime = props.item.visitTime;
+
   localHomeVisitDetails.value = {
     verifierId: props.item.verifierName ? extractVerifierId(props.item.verifierName) : null,
-    visitDate: props.item.visitDate || null,
-    visitTime: props.item.visitTime || null
+    visitDate: rawDate instanceof Date ? rawDate : DateFormatter.backendToDateObject(rawDate),
+    visitTime: parseTimeStringToDate(rawTime)
   };
 }
 
