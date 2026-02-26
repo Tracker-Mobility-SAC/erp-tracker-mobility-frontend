@@ -44,4 +44,5 @@ export class IOrderRepository {
   async createObservation(command) {
     throw new Error('Method not implemented: createObservation');
   }
+
 }

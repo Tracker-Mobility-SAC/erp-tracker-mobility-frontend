@@ -63,14 +63,6 @@ export class OrderRequestApi extends BaseApi {
   }
 
   /**
-   * Obtiene todas las solicitudes de órdenes
-   * @returns {Promise}
-   */
-  getAll() {
-    return this.#endpoint.getAll();
-  }
-
-  /**
    * Obtiene una solicitud de orden por ID (endpoint de detalle web)
    * @param {number} id - ID de la solicitud
    * @returns {Promise}
@@ -86,6 +78,27 @@ export class OrderRequestApi extends BaseApi {
    */
   getByCorporateEmail(corporateEmail) {
     return this.http.get(`/web/orders/corporateEmail/${corporateEmail}`);
+  }
+
+  /**
+   * Obtiene órdenes paginadas por corporateEmail del ejecutivo solicitante
+   * GET /api/v1/web/orders/corporateEmail/{corporateEmail}/paginated
+   * @param {Object} params
+   * @param {string} params.corporateEmail - Email corporativo del ejecutivo (path param)
+   * @param {number} params.page - Página (0-indexed, default 0)
+   * @param {number} params.size - Elementos por página (default 10)
+   * @param {string} [params.status] - Filtro por estado
+   * @param {string} [params.search] - Búsqueda por orderCode, clientName o phoneNumber
+   * @returns {Promise}
+   */
+  getPaginatedByCorporateEmail({ corporateEmail, page, size, status, search } = {}) {
+    const params = { page, size };
+    if (status) params.status = status;
+    if (search && search.trim()) params.search = search.trim();
+    return this.http.get(
+      `/web/orders/corporateEmail/${encodeURIComponent(corporateEmail)}/paginated`,
+      { params }
+    );
   }
 
   /**

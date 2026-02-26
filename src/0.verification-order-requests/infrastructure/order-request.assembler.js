@@ -85,7 +85,8 @@ export class OrderRequestAssembler {
       obsPendientes: resource.obsPendientes || 0,
       visitDate: resource.visitDate,
       clientName: resource.clientName,
-      clientPhoneNumber: resource.clientPhoneNumber || '-'
+      // El endpoint paginado devuelve 'phoneNumber'; el no-paginado devuelve 'clientPhoneNumber'
+      clientPhoneNumber: resource.clientPhoneNumber || resource.phoneNumber || '-'
     });
     
     console.log('[ASSEMBLER] Created entity:', summaryEntity);

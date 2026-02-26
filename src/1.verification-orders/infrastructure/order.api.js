@@ -56,4 +56,5 @@ export class OrderApi extends BaseApi {
   createObservation(orderId, observationData) {
     return this.http.post(`/web${this.#endpoint.endpointPath}/${orderId}/observations`, observationData);
   }
+
 }

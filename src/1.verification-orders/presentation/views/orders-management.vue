@@ -14,37 +14,28 @@ import {
   OrderStatusTranslations
 } from '../constants/verification-order-ui.constants.js';
 
-// Router y Store
+// Router y Stores
 const router = useRouter();
-const store = useVerificationOrderStore();
+const store  = useVerificationOrderStore();
 
+// Composable de filtros (client-side)
 const {
+  filteredOrders,
   globalFilterValue,
   selectedStatus,
-  dateRange,
-  filteredOrders,
-  clearFilters,
   updateGlobalFilter,
   updateStatusFilter,
-  updateDateRangeFilter,
-  getCountByStatus
+  clearFilters,
 } = useVerificationOrderFilters(() => store.orderSummaries);
 
-// Estados locales
+// Estado
 const loading = ref(false);
 
 // Configuración
 const statusOptions = StatusFilterOptions;
 const title = { singular: UILabels.singular, plural: UILabels.title };
 
-// Métodos
-function onGlobalFilterChange(value) {
-  updateGlobalFilter(value);
-}
-
-function onClearFilters() {
-  clearFilters();
-}
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getStatusClass(status) {
   return StatusClasses[status] || 'status-default';
@@ -55,13 +46,12 @@ function getStatusLabel(status) {
 }
 
 function handleViewDetails(order) {
-  router.push({ 
-    name: 'verification-order-detail', 
-    query: { id: order.id } 
-  });
+  router.push({ name: 'verification-order-detail', query: { id: order.id } });
 }
 
-async function getAllOrders() {
+// ─── Data fetching ─────────────────────────────────────────────────────────────
+
+async function fetchData() {
   loading.value = true;
   try {
     await store.fetchAllSummaries();
@@ -70,10 +60,19 @@ async function getAllOrders() {
   }
 }
 
-// Lifecycle
-onMounted(async () => {
-  await getAllOrders();
-});
+// ─── Event handlers ────────────────────────────────────────────────────────────
+
+function onGlobalFilterChange(value) {
+  updateGlobalFilter(value);
+}
+
+function onClearFilters() {
+  clearFilters();
+}
+
+// ─── Lifecycle ─────────────────────────────────────────────────────────────────
+
+onMounted(fetchData);
 </script>
 
 <template>
@@ -102,15 +101,14 @@ onMounted(async () => {
           :show-actions="true"
           :show-view-action="true"
           :view-action-icon-only="true"
-          :rows="10"
           :rows-per-page-options="[5, 10, 20, 50]"
-          search-placeholder="Buscar por código, cliente, empresa o verificador..."
+          search-placeholder="Buscar por código, cliente o teléfono..."
           @global-filter-change="onGlobalFilterChange"
           @clear-filters="onClearFilters"
           @view-item-requested-manager="handleViewDetails"
         >
           <!-- Filtros personalizados -->
-          <template #filters="{ clearFilters }">
+          <template #filters>
             <pv-dropdown
               v-model="selectedStatus"
               :options="statusOptions"
@@ -134,25 +132,9 @@ onMounted(async () => {
               <template #option="slotProps">
                 <div class="flex align-items-center justify-content-between w-full gap-2">
                   <span>{{ slotProps.option.label }}</span>
-                  <span 
-                    :class="['badge-custom', getStatusClass(slotProps.option.value)]"
-                  >
-                    {{ getCountByStatus(slotProps.option.value) }}
-                  </span>
                 </div>
               </template>
             </pv-dropdown>
-            
-            <pv-calendar
-              v-model="dateRange"
-              selection-mode="range"
-              :manual-input="false"
-              date-format="dd/mm/yy"
-              placeholder="Filtrar por fecha"
-              class="w-full md:w-auto"
-              show-icon
-              @update:model-value="updateDateRangeFilter(dateRange)"
-            />
             
             <pv-button
               label="Limpiar filtros"
@@ -164,9 +146,7 @@ onMounted(async () => {
 
           <!-- Status Column Template -->
           <template #status="slotProps">
-            <span 
-              :class="['status-tag', getStatusClass(slotProps.data.status)]"
-            >
+            <span :class="['status-tag', getStatusClass(slotProps.data.status)]">
               <i :class="StatusIcons[slotProps.data.status]" class="mr-1"></i>
               {{ getStatusLabel(slotProps.data.status) }}
             </span>

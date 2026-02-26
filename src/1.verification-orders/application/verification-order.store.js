@@ -145,12 +145,12 @@ const useVerificationOrderStore = defineStore('verificationOrder', () => {
     return {
         // State
         orderSummaries,
-        
+
         // Actions
         fetchAllSummaries,
         fetchById,
         assignVerifier,
-        createObservation
+        createObservation,
     };
 });
 

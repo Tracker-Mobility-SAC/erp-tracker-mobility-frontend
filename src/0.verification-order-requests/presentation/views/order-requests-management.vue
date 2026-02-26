@@ -1,151 +1,113 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useOrderRequestStore } from '../../application/order-request.store.js';
+import { useAuthenticationStore } from '../../../6.security/application/authentication.store.js';
 import { StatusTranslations, StatusFilterOptions } from '../constants/order-request-ui.constants.js';
 import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
 import DataManager from '../../../shared-v2/presentation/components/data-manager.vue';
 import { DateFormatter } from '../../../shared-v2/utils/date-formatter.js';
 
-// Router y Store
-const router = useRouter();
-const store = useOrderRequestStore();
+// Router y Stores
+const router    = useRouter();
+const store     = useOrderRequestStore();
+const authStore = useAuthenticationStore();
 
-// Estados locales
-const loading = ref(false);
+// Estado
+const loading           = ref(false);
 const globalFilterValue = ref('');
-const selectedStatus = ref('');
+const selectedStatus    = ref('');
+const serverPage        = ref(0);
+const serverSize        = ref(10);
 
 // Configuración
 const title = { singular: 'Solicitud de Orden', plural: 'Mis Solicitudes' };
 
 // Columnas de la tabla
 const columns = [
-  { field: 'orderCode', header: 'Código', sortable: true, style: 'width: 150px;' },
-  { field: 'clientName', header: 'Cliente', sortable: true, style: 'width: 250px;' },
-  { field: 'clientPhoneNumber', header: 'Contacto', sortable: true, template: 'clientPhoneNumber', style: 'width: 130px;' },
-  { field: 'requestDate', header: 'Fecha de Solicitud', sortable: true, template: 'requestDate', style: 'width: 150px;' },
-  { field: 'status', header: 'Estado', sortable: true, template: 'status', style: 'width: 150px;' },
-  { field: 'visitDate', header: 'Fecha Visita', sortable: true, template: 'visitDate', style: 'width: 150px;' }
+  { field: 'orderCode',         header: 'Código',             sortable: true, style: 'width: 150px;' },
+  { field: 'clientName',        header: 'Cliente',             sortable: true, style: 'width: 250px;' },
+  { field: 'clientPhoneNumber', header: 'Contacto',            sortable: true, template: 'clientPhoneNumber', style: 'width: 130px;' },
+  { field: 'requestDate',       header: 'Fecha de Solicitud',  sortable: true, template: 'requestDate',       style: 'width: 150px;' },
+  { field: 'status',            header: 'Estado',              sortable: true, template: 'status',            style: 'width: 150px;' },
+  { field: 'visitDate',         header: 'Fecha Visita',        sortable: true, template: 'visitDate',         style: 'width: 150px;' }
 ];
 
-// Opciones de estado (incluye todos los 8 estados del ServiceStatusEnum)
 const statusOptions = StatusFilterOptions;
 
-// Computed - Órdenes desde el store
-const orders = computed(() => {
-  console.log('[VIEW COMPUTED] store.orderRequests:', store.orderRequests);
-  console.log('[VIEW COMPUTED] First order:', store.orderRequests[0]);
-  return store.orderRequests;
-});
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-// Computed - Órdenes procesadas (sin transformaciones adicionales)
-const processedOrders = computed(() => {
-  return orders.value;
-});
-
-// Computed - Órdenes filtradas
-const filteredOrders = computed(() => {
-  let result = processedOrders.value;
-
-  // Filtro de búsqueda global
-  if (globalFilterValue.value) {
-    // Normalizar término de búsqueda: minúsculas, eliminar espacios extras
-    const searchTerm = globalFilterValue.value.toLowerCase().trim().replace(/\s+/g, ' ');
-    
-    // Helper para normalizar texto: minúsculas + espacios simples
-    const normalizeText = (text) => {
-      if (!text) return '';
-      return String(text).toLowerCase().trim().replace(/\s+/g, ' ');
-    };
-    
-    result = result.filter(order => {
-      // Normalizar cada campo antes de comparar
-      const orderCode = normalizeText(order.orderCode);
-      const clientName = normalizeText(order.clientName);
-      const clientPhoneNumber = normalizeText(order.clientPhoneNumber);
-      
-      // Buscar coincidencias parciales en cualquiera de los campos
-      return orderCode.includes(searchTerm) ||
-             clientName.includes(searchTerm) ||
-             clientPhoneNumber.includes(searchTerm);
-    });
-  }
-
-  // Filtro por estado
-  if (selectedStatus.value) {
-    result = result.filter(order => order.status === selectedStatus.value);
-  }
-
-  return result;
-});
-
-// Métodos
 function formatDate(date) {
   if (!date) return '-';
-  try {
-    return DateFormatter.fromBackend(date);
-  } catch {
-    return date;
-  }
+  try { return DateFormatter.fromBackend(date); } catch { return date; }
 }
 
 function formatVisitDate(date) {
   if (!date) return 'PENDIENTE';
-  try {
-    return DateFormatter.fromBackend(date);
-  } catch {
-    return 'PENDIENTE';
-  }
-}
-
-function getCountByStatus(status) {
-  if (!status) return processedOrders.value.length;
-  return processedOrders.value.filter(order => order.status === status).length;
-}
-
-function onGlobalFilterChange(value) {
-  globalFilterValue.value = value;
-}
-
-function onClearFilters() {
-  globalFilterValue.value = '';
-  selectedStatus.value = '';
+  try { return DateFormatter.fromBackend(date); } catch { return 'PENDIENTE'; }
 }
 
 function handleViewDetails(order) {
-  router.push({ 
-    name: 'order-request-detail', 
-    params: { id: order.id }
-  });
+  router.push({ name: 'order-request-detail', params: { id: order.id } });
 }
 
 function handleNewRequest() {
   router.push({ name: 'order-request-form' });
 }
 
-async function fetchOrders() {
-  console.log('[VIEW] fetchOrders called');
+// ─── Data fetching ─────────────────────────────────────────────────────────────
+
+async function fetchData() {
   loading.value = true;
   try {
-    // Usar el Store para cargar las órdenes
-    const result = await store.fetchAll();
-    console.log('[VIEW] fetchAll result:', result);
-    console.log('[VIEW] store.orderRequests after fetch:', store.orderRequests);
-    if (store.orderRequests.length > 0) {
-      console.log('[VIEW] First order after fetch:', store.orderRequests[0]);
-    }
+    await store.fetchPaginated({
+      corporateEmail: authStore.currentUsername,
+      page:   serverPage.value,
+      size:   serverSize.value,
+      status: selectedStatus.value  || undefined,
+      search: globalFilterValue.value.trim() || undefined,
+    });
   } finally {
     loading.value = false;
   }
 }
 
-// Lifecycle
-onMounted(async () => {
-  console.log('[VIEW] Component mounted, fetching orders...');
-  await fetchOrders();
-  console.log('[VIEW] After mount, orders.value:', orders.value);
+// ─── Event handlers ────────────────────────────────────────────────────────────
+
+let searchDebounceTimer = null;
+
+function onGlobalFilterChange(value) {
+  globalFilterValue.value = value;
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(() => {
+    serverPage.value = 0;
+    fetchData();
+  }, 400);
+}
+
+function onPageChange({ page, rows }) {
+  serverPage.value = page;
+  serverSize.value = rows;
+  fetchData();
+}
+
+function onClearFilters() {
+  globalFilterValue.value = '';
+  selectedStatus.value    = '';
+  serverPage.value        = 0;
+  fetchData();
+}
+
+// ─── Watchers ──────────────────────────────────────────────────────────────────
+
+watch(selectedStatus, () => {
+  serverPage.value = 0;
+  fetchData();
 });
+
+// ─── Lifecycle ─────────────────────────────────────────────────────────────────
+
+onMounted(fetchData);
 </script>
 
 <template>
@@ -160,8 +122,9 @@ onMounted(async () => {
     <div class="flex-1 p-4 overflow-auto">
       <div>
         <data-manager
-          :items="processedOrders"
-          :filtered-items="filteredOrders"
+          :items="store.paginatedOrderRequests"
+          :lazy="true"
+          :total-records="store.totalElements"
           :global-filter-value="globalFilterValue"
           :columns="columns"
           :title="title"
@@ -180,11 +143,12 @@ onMounted(async () => {
           new-button-label="Nueva Solicitud"
           @global-filter-change="onGlobalFilterChange"
           @clear-filters="onClearFilters"
+          @page-change="onPageChange"
           @view-item-requested-manager="handleViewDetails"
           @new-item-requested-manager="handleNewRequest"
         >
           <!-- Filtros personalizados -->
-          <template #filters="{ clearFilters }">
+          <template #filters>
             <pv-dropdown
               v-model="selectedStatus"
               :options="statusOptions"
@@ -206,9 +170,6 @@ onMounted(async () => {
               <template #option="slotProps">
                 <div class="flex align-items-center justify-content-between w-full gap-2">
                   <span>{{ slotProps.option.label }}</span>
-                  <span :class="['badge-custom', `status-${slotProps.option.value.toLowerCase().replace('_', '-')}`]">
-                    {{ getCountByStatus(slotProps.option.value) }}
-                  </span>
                 </div>
               </template>
             </pv-dropdown>
@@ -243,9 +204,7 @@ onMounted(async () => {
             <span v-if="!slotProps.data.visitDate" class="status-tag status-pendiente">
               PENDIENTE
             </span>
-            <span v-else>
-              {{ formatVisitDate(slotProps.data.visitDate) }}
-            </span>
+            <span v-else>{{ formatVisitDate(slotProps.data.visitDate) }}</span>
           </template>
         </data-manager>
       </div>

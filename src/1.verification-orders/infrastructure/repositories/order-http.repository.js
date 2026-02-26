@@ -59,4 +59,5 @@ export class OrderHttpRepository extends IOrderRepository {
     const response = await this.#api.createObservation(command.orderId, resource);
     return response.data;
   }
+
 }

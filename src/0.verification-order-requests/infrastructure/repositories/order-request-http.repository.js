@@ -20,15 +20,6 @@ export class OrderRequestHttpRepository extends IOrderRequestRepository {
   }
 
   /**
-   * Obtiene todas las solicitudes (versión resumen para listados)
-   * @returns {Promise<Array<OrderRequestSummary>>} Lista de resúmenes
-   */
-  async findAll() {
-    const response = await this.#api.getAll();
-    return OrderRequestAssembler.toSummaryEntities(response.data);
-  }
-
-  /**
    * Obtiene solicitudes por email corporativo del ejecutivo
    * @param {string} corporateEmail - Email corporativo
    * @returns {Promise<Array<OrderRequestSummary>>} Lista de resúmenes
@@ -93,5 +84,27 @@ export class OrderRequestHttpRepository extends IOrderRequestRepository {
 
   async delete(id) {
     await this.#api.delete(id);
+  }
+
+  /**
+   * Obtiene solicitudes paginadas por email corporativo del ejecutivo.
+   * @param {Object} params
+   * @param {string} params.corporateEmail - Email corporativo
+   * @param {number} [params.page=0] - Página (0-indexed)
+   * @param {number} [params.size=10] - Elementos por página
+   * @param {string} [params.status] - Filtro por estado
+   * @param {string} [params.search] - Búsqueda por orderCode, clientName o phoneNumber
+   * @returns {Promise<{items: OrderRequestSummary[], totalElements: number, totalPages: number, currentPage: number, pageSize: number}>}
+   */
+  async findPaginatedByCorporateEmail({ corporateEmail, page = 0, size = 10, status, search } = {}) {
+    const response = await this.#api.getPaginatedByCorporateEmail({ corporateEmail, page, size, status, search });
+    const data = response.data;
+    return {
+      items:         OrderRequestAssembler.toSummaryEntities(data.content || []),
+      totalElements: data.totalElements ?? 0,
+      totalPages:    data.totalPages    ?? 0,
+      currentPage:   data.currentPage   ?? page,
+      pageSize:      data.pageSize      ?? size,
+    };
   }
 }

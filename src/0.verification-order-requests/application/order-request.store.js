@@ -62,6 +62,8 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
   const loading = ref(false);
   const error = ref(null);
   const orderRequests = ref([]); // Lista de órdenes (para management view)
+  const paginatedOrderRequests = ref([]); // Lista paginada server-side
+  const totalElements = ref(0);
 
   // Getters
   const progressPercentage = computed(() => {
@@ -80,6 +82,34 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
 
   // Actions
   
+  /**
+   * Obtiene solicitudes paginadas (server-side) para el ejecutivo autenticado.
+   * @param {Object} params
+   * @param {string} params.corporateEmail - Email corporativo del ejecutivo
+   * @param {number} [params.page=0]
+   * @param {number} [params.size=10]
+   * @param {string} [params.status]
+   * @param {string} [params.search]
+   * @returns {Promise<Object>} Resultado { success, data?, message, code }
+   */
+  async function fetchPaginated({ corporateEmail, page = 0, size = 10, status, search } = {}) {
+    try {
+      loading.value = true;
+      error.value = null;
+
+      const data = await repository.findPaginatedByCorporateEmail({ corporateEmail, page, size, status, search });
+
+      paginatedOrderRequests.value = data.items;
+      totalElements.value          = data.totalElements;
+
+      return { success: true, data, message: '', code: 'SUCCESS' };
+    } catch (err) {
+      return errorHandler.handle(err, 'cargar las solicitudes de orden');
+    } finally {
+      loading.value = false;
+    }
+  }
+
   /**
    * Obtiene todas las solicitudes (versión resumen para listados)
    * Filtra por el email corporativo del usuario autenticado
@@ -338,6 +368,8 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
     loading,
     error,
     orderRequests,
+    paginatedOrderRequests,
+    totalElements,
     
     // Getters
     progressPercentage,
@@ -345,6 +377,7 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
     
     // Actions
     fetchAll,
+    fetchPaginated,
     fetchApplicantCompanyData,
     createOrder,
     goToNextStep,
