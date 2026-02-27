@@ -23,6 +23,7 @@ const globalFilterValue = ref('');
 const selectedStatus    = ref('');
 const serverPage        = ref(store.savedPage);
 const serverSize        = ref(store.savedSize);
+const serverFirst       = ref(store.savedPage * store.savedSize);
 const loading           = ref(false);
 
 // Configuración
@@ -67,14 +68,16 @@ function onGlobalFilterChange(value) {
   globalFilterValue.value = value;
   clearTimeout(searchDebounceTimer);
   searchDebounceTimer = setTimeout(() => {
-    serverPage.value = 0;
+    serverPage.value  = 0;
+    serverFirst.value = 0;
     fetchData();
   }, 400);
 }
 
 function onPageChange({ page, rows }) {
-  serverPage.value = page;
-  serverSize.value = rows;
+  serverPage.value  = page;
+  serverSize.value  = rows;
+  serverFirst.value = page * rows;
   fetchData();
 }
 
@@ -82,13 +85,16 @@ function onClearFilters() {
   globalFilterValue.value = '';
   selectedStatus.value    = '';
   serverPage.value        = 0;
+  serverSize.value        = store.savedSize;
+  serverFirst.value       = 0;
   fetchData();
 }
 
 // ─── Watchers ──────────────────────────────────────────────────────────────────
 
 watch(selectedStatus, () => {
-  serverPage.value = 0;
+  serverPage.value  = 0;
+  serverFirst.value = 0;
   fetchData();
 });
 
@@ -112,6 +118,7 @@ onMounted(fetchData);
           :items="store.paginatedOrders"
           :lazy="true"
           :total-records="store.totalElements"
+          :first="serverFirst"
           :global-filter-value="globalFilterValue"
           :columns="TableColumns"
           :title="title"

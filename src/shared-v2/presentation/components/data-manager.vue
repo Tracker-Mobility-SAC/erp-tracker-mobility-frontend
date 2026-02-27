@@ -68,6 +68,7 @@ const props = defineProps({
   // Paginación lazy (server-side)
   lazy: { type: Boolean, default: false },
   totalRecords: { type: Number, default: 0 },
+  first: { type: Number, default: 0 },
 
   // Labels de botones principales
   newButtonLabel: { type: String, default: 'Agregar' },
@@ -342,6 +343,7 @@ onMounted(() => initFilters())
         :rows-per-page-options="rowsPerPageOptions"
         :lazy="lazy"
         :total-records="lazy ? totalRecords : undefined"
+        :first="lazy ? first : undefined"
         scrollable
         scroll-height="flex"
         :global-filter-fields="(filteredItems || lazy) ? [] : columns.map(col => col.field)"
