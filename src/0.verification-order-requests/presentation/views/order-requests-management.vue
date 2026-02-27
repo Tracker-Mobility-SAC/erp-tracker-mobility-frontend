@@ -17,8 +17,9 @@ const authStore = useAuthenticationStore();
 const loading           = ref(false);
 const globalFilterValue = ref('');
 const selectedStatus    = ref('');
-const serverPage        = ref(0);
-const serverSize        = ref(10);
+const serverPage        = ref(store.savedPage);
+const serverSize        = ref(store.savedSize);
+const serverFirst       = ref(store.savedPage * store.savedSize);
 
 // Configuración
 const title = { singular: 'Solicitud de Orden', plural: 'Mis Solicitudes' };
@@ -80,14 +81,16 @@ function onGlobalFilterChange(value) {
   globalFilterValue.value = value;
   clearTimeout(searchDebounceTimer);
   searchDebounceTimer = setTimeout(() => {
-    serverPage.value = 0;
+    serverPage.value  = 0;
+    serverFirst.value = 0;
     fetchData();
   }, 400);
 }
 
 function onPageChange({ page, rows }) {
-  serverPage.value = page;
-  serverSize.value = rows;
+  serverPage.value  = page;
+  serverSize.value  = rows;
+  serverFirst.value = page * rows;
   fetchData();
 }
 
@@ -95,13 +98,15 @@ function onClearFilters() {
   globalFilterValue.value = '';
   selectedStatus.value    = '';
   serverPage.value        = 0;
+  serverFirst.value       = 0;
   fetchData();
 }
 
 // ─── Watchers ──────────────────────────────────────────────────────────────────
 
 watch(selectedStatus, () => {
-  serverPage.value = 0;
+  serverPage.value  = 0;
+  serverFirst.value = 0;
   fetchData();
 });
 
@@ -137,7 +142,8 @@ onMounted(fetchData);
           :show-actions="true"
           :show-view-action="true"
           :view-action-icon-only="true"
-          :rows="10"
+          :first="serverFirst"
+          :rows="serverSize"
           :rows-per-page-options="[5, 10, 20, 50]"
           search-placeholder="Buscar por código, cliente o contacto..."
           new-button-label="Nueva Solicitud"

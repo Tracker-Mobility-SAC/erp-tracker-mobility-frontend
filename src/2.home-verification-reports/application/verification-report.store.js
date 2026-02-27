@@ -22,6 +22,8 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
     // Paginated-mode state
     const paginatedReports = ref([]);
     const totalElements    = ref(0);
+    const savedPage        = ref(0);
+    const savedSize        = ref(10);
 
     // Dependencies
     const notificationService = useNotification();
@@ -65,6 +67,8 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
         if (result.success) {
             paginatedReports.value = result.data.items;
             totalElements.value    = result.data.totalElements;
+            savedPage.value        = page;
+            savedSize.value        = size;
         }
 
         return result;
@@ -149,6 +153,8 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
         verificationReports,
         paginatedReports,
         totalElements,
+        savedPage,
+        savedSize,
         fetchAll,
         fetchPaginated,
         fetchById,

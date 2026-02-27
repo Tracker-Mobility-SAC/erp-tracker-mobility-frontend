@@ -24,8 +24,9 @@ const selectedStatus        = ref('');
 const selectedValidationStatus = ref('');
 
 // ─── Paginación server-side (0-indexed, como espera el backend) ────────────
-const serverPage = ref(0);
-const serverSize = ref(10);
+const serverPage  = ref(reportStore.savedPage);
+const serverSize  = ref(reportStore.savedSize);
+const serverFirst = ref(reportStore.savedPage * reportStore.savedSize);
 let   searchDebounceTimer = null;
 
 // ─── Estado general ────────────────────────────────────────────────────────
@@ -72,8 +73,9 @@ async function fetchData() {
 
 // ─── Handlers del DataManager ─────────────────────────────────────────────
 function onPageChange({ page, rows }) {
-  serverPage.value = page;
-  serverSize.value = rows;
+  serverPage.value  = page;
+  serverSize.value  = rows;
+  serverFirst.value = page * rows;
   fetchData();
 }
 
@@ -81,7 +83,8 @@ function onGlobalFilterChange(value) {
   globalFilterValue.value = value;
   clearTimeout(searchDebounceTimer);
   searchDebounceTimer = setTimeout(() => {
-    serverPage.value = 0;
+    serverPage.value  = 0;
+    serverFirst.value = 0;
     fetchData();
   }, 400);
 }
@@ -91,12 +94,14 @@ function onClearFilters() {
   selectedStatus.value           = '';
   selectedValidationStatus.value = '';
   serverPage.value               = 0;
+  serverFirst.value              = 0;
   fetchData();
 }
 
 // Dropdown filters re-fetch on change, reset page
 watch([selectedStatus, selectedValidationStatus], () => {
-  serverPage.value = 0;
+  serverPage.value  = 0;
+  serverFirst.value = 0;
   fetchData();
 });
 
@@ -146,6 +151,7 @@ onMounted(fetchData);
           :show-edit-action="false"
           :show-delete-action="false"
           :view-action-icon-only="true"
+          :first="serverFirst"
           :rows="serverSize"
           :rows-per-page-options="[10, 15, 20, 25]"
           search-placeholder="Buscar por código, candidato o verificador..."

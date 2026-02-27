@@ -64,6 +64,8 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
   const orderRequests = ref([]); // Lista de órdenes (para management view)
   const paginatedOrderRequests = ref([]); // Lista paginada server-side
   const totalElements = ref(0);
+  const savedPage     = ref(0);
+  const savedSize     = ref(10);
 
   // Getters
   const progressPercentage = computed(() => {
@@ -101,6 +103,8 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
 
       paginatedOrderRequests.value = data.items;
       totalElements.value          = data.totalElements;
+      savedPage.value              = page;
+      savedSize.value              = size;
 
       return { success: true, data, message: '', code: 'SUCCESS' };
     } catch (err) {
@@ -370,6 +374,8 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
     orderRequests,
     paginatedOrderRequests,
     totalElements,
+    savedPage,
+    savedSize,
     
     // Getters
     progressPercentage,
