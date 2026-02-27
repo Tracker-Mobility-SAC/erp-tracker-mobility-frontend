@@ -1,10 +1,9 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import Toolbar from '../../../shared-v2/presentation/components/toolbar.vue';
 import DataManager from '../../../shared-v2/presentation/components/data-manager.vue';
 import useVerificationOrderStore from '../../application/verification-order.store.js';
-import { useVerificationOrderFilters } from '../composables/use-verification-order-filters.js';
 import { 
   UILabels, 
   TableColumns, 
@@ -18,18 +17,13 @@ import {
 const router = useRouter();
 const store  = useVerificationOrderStore();
 
-// Composable de filtros (client-side)
-const {
-  filteredOrders,
-  globalFilterValue,
-  selectedStatus,
-  updateGlobalFilter,
-  updateStatusFilter,
-  clearFilters,
-} = useVerificationOrderFilters(() => store.orderSummaries);
-
-// Estado
-const loading = ref(false);
+// Estado — serverPage/serverSize inicializan desde el store para restaurar
+// la paginación al volver desde la vista de detalle.
+const globalFilterValue = ref('');
+const selectedStatus    = ref('');
+const serverPage        = ref(store.savedPage);
+const serverSize        = ref(store.savedSize);
+const loading           = ref(false);
 
 // Configuración
 const statusOptions = StatusFilterOptions;
@@ -54,7 +48,12 @@ function handleViewDetails(order) {
 async function fetchData() {
   loading.value = true;
   try {
-    await store.fetchAllSummaries();
+    await store.fetchPaginated({
+      page:   serverPage.value,
+      size:   serverSize.value,
+      status: selectedStatus.value || undefined,
+      search: globalFilterValue.value.trim() || undefined,
+    });
   } finally {
     loading.value = false;
   }
@@ -62,13 +61,36 @@ async function fetchData() {
 
 // ─── Event handlers ────────────────────────────────────────────────────────────
 
+let searchDebounceTimer = null;
+
 function onGlobalFilterChange(value) {
-  updateGlobalFilter(value);
+  globalFilterValue.value = value;
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(() => {
+    serverPage.value = 0;
+    fetchData();
+  }, 400);
+}
+
+function onPageChange({ page, rows }) {
+  serverPage.value = page;
+  serverSize.value = rows;
+  fetchData();
 }
 
 function onClearFilters() {
-  clearFilters();
+  globalFilterValue.value = '';
+  selectedStatus.value    = '';
+  serverPage.value        = 0;
+  fetchData();
 }
+
+// ─── Watchers ──────────────────────────────────────────────────────────────────
+
+watch(selectedStatus, () => {
+  serverPage.value = 0;
+  fetchData();
+});
 
 // ─── Lifecycle ─────────────────────────────────────────────────────────────────
 
@@ -87,8 +109,9 @@ onMounted(fetchData);
     <div class="flex-1 p-4 overflow-auto">
       <div>
         <data-manager
-          :items="store.orderSummaries"
-          :filtered-items="filteredOrders"
+          :items="store.paginatedOrders"
+          :lazy="true"
+          :total-records="store.totalElements"
           :global-filter-value="globalFilterValue"
           :columns="TableColumns"
           :title="title"
@@ -101,10 +124,12 @@ onMounted(fetchData);
           :show-actions="true"
           :show-view-action="true"
           :view-action-icon-only="true"
+          :rows="serverSize"
           :rows-per-page-options="[5, 10, 20, 50]"
-          search-placeholder="Buscar por código, cliente o teléfono..."
+          search-placeholder="Buscar por código, cliente o empresa..."
           @global-filter-change="onGlobalFilterChange"
           @clear-filters="onClearFilters"
+          @page-change="onPageChange"
           @view-item-requested-manager="handleViewDetails"
         >
           <!-- Filtros personalizados -->
@@ -116,7 +141,6 @@ onMounted(fetchData);
               option-value="value"
               placeholder="Filtrar por estado"
               class="w-full md:w-auto"
-              @change="updateStatusFilter(selectedStatus)"
             >
               <template #value="slotProps">
                 <div v-if="slotProps.value" class="flex align-items-center gap-2">

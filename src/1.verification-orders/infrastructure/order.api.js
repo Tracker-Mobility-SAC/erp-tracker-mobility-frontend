@@ -57,4 +57,21 @@ export class OrderApi extends BaseApi {
     return this.http.post(`/web${this.#endpoint.endpointPath}/${orderId}/observations`, observationData);
   }
 
+  /**
+   * Obtiene órdenes resumidas paginadas desde
+   * GET /api/v1/web/orders/paginated
+   * @param {Object} params
+   * @param {number} params.page   - Número de página (0-indexed)
+   * @param {number} params.size   - Tamaño de página
+   * @param {string} [params.status] - Filtro por estado
+   * @param {string} [params.search] - Búsqueda por orderCode, clientName, companyName, verifierName
+   * @returns {Promise} Página con content, totalElements, currentPage, pageSize, totalPages
+   */
+  getPaginated({ page, size, status, search } = {}) {
+    const params = { page, size };
+    if (status) params.status = status;
+    if (search && search.trim()) params.search = search.trim();
+    return this.http.get(`/web${this.#endpoint.endpointPath}/paginated`, { params });
+  }
+
 }

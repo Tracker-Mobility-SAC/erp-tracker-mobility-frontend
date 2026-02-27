@@ -150,13 +150,39 @@
     border-bottom-right-radius: var(--border-radius);
 }
 
-.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-    background-color: var(--color-primary) !important;
-    border-color: var(--color-primary) !important;
-    color: var(--color-white) !important;
+/* PrimeVue 4 Aura: override design tokens so the theme itself renders our colors */
+:root {
+    --p-paginator-nav-button-selected-background: var(--color-primary);
+    --p-paginator-nav-button-selected-color: var(--color-white);
 }
 
-.p-paginator .p-paginator-pages .p-paginator-page:hover {
+.p-paginator .p-paginator-pages .p-paginator-page {
+    transition: all 0.18s ease;
+    border-radius: 50% !important;
+    font-weight: 500;
+    min-width: 2.25rem !important;
+    height: 2.25rem !important;
+}
+
+/* PrimeVue 4: active page class = p-paginator-page-selected + data-p-active="true" */
+.p-paginator .p-paginator-pages .p-paginator-page.p-paginator-page-selected,
+.p-paginator .p-paginator-pages .p-paginator-page[data-p-active="true"] {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-white) !important;
+    font-weight: 800 !important;
+    border-radius: 50% !important;
+    position: relative !important;
+    z-index: 1 !important;
+    /* overflow: visible allows the ring to extend outside the button's own overflow:hidden */
+    overflow: visible !important;
+    box-shadow:
+        0 0 0 3px var(--color-white),
+        0 0 0 6px var(--color-primary),
+        0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page:hover:not(.p-paginator-page-selected):not([data-p-active="true"]) {
     background-color: var(--color-primary-light) !important;
     border-color: var(--color-primary) !important;
 }

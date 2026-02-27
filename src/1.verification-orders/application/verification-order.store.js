@@ -5,6 +5,7 @@ import { AssignVerifierCommand } from "../domain/commands/assign-verifier.comman
 import { CreateObservationCommand } from "../domain/commands/create-observation.command.js";
 import { VerificationOrderErrorHandler } from "./error-handlers/verification-order-error.handler.js";
 import { useNotification } from "../../shared-v2/composables/use-notification.js";
+import { FetchPaginatedOrdersUseCase } from "./use-cases/fetch-paginated-orders.use-case.js";
 
 /**
  * Store de Pinia para funcionalidad de órdenes de verificación.
@@ -14,12 +15,22 @@ import { useNotification } from "../../shared-v2/composables/use-notification.js
  */
 const useVerificationOrderStore = defineStore('verificationOrder', () => {
     // State
-    const orderSummaries = ref([]);
+    const orderSummaries  = ref([]);
+    const paginatedOrders = ref([]);
+    const totalElements   = ref(0);
+
+    // Pagination position — persists across navigation so returning from detail
+    // restores the last page the user was on.
+    const savedPage = ref(0);
+    const savedSize = ref(10);
 
     // Dependencies
     const orderRepository = new OrderHttpRepository();
     const { showSuccess, showError, showWarning } = useNotification();
     const errorHandler = new VerificationOrderErrorHandler({ showSuccess, showError, showWarning });
+
+    // Use cases
+    const fetchPaginatedUseCase = new FetchPaginatedOrdersUseCase(orderRepository, errorHandler);
 
     /**
      * Obtiene todas las órdenes en formato resumido
@@ -142,15 +153,36 @@ const useVerificationOrderStore = defineStore('verificationOrder', () => {
         }
     }
 
+    /**
+     * Obtiene órdenes paginadas.
+     * @param {Object} params - { page?, size?, status?, search? }
+     * @returns {Promise<{success: boolean, data?, message?, code?}>}
+     */
+    async function fetchPaginated({ page = 0, size = 10, status, search } = {}) {
+        const result = await fetchPaginatedUseCase.execute({ page, size, status, search });
+        if (result.success) {
+            paginatedOrders.value = result.data.items;
+            totalElements.value   = result.data.totalElements;
+            savedPage.value       = page;
+            savedSize.value       = size;
+        }
+        return result;
+    }
+
     return {
         // State
         orderSummaries,
+        paginatedOrders,
+        totalElements,
+        savedPage,
+        savedSize,
 
         // Actions
         fetchAllSummaries,
         fetchById,
         assignVerifier,
         createObservation,
+        fetchPaginated,
     };
 });
 

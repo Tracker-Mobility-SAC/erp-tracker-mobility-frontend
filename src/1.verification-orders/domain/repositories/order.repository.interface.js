@@ -45,4 +45,14 @@ export class IOrderRepository {
     throw new Error('Method not implemented: createObservation');
   }
 
+  /**
+   * Obtiene órdenes paginadas con filtros opcionales.
+   * @param {Object} params - { page, size, status?, search? }
+   * @returns {Promise<{items: ServiceOrderSummary[], totalElements: number, totalPages: number, currentPage: number, pageSize: number}>}
+   * @throws {Error} Method not implemented
+   */
+  async findPaginated(params) {
+    throw new Error('Method not implemented: findPaginated');
+  }
+
 }

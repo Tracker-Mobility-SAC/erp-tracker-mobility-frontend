@@ -60,4 +60,21 @@ export class OrderHttpRepository extends IOrderRepository {
     return response.data;
   }
 
+  /**
+   * Obtiene órdenes paginadas con filtros opcionales.
+   * @param {Object} params - { page, size, status?, search? }
+   * @returns {Promise<{items: ServiceOrderSummary[], totalElements: number, totalPages: number, currentPage: number, pageSize: number}>}
+   */
+  async findPaginated({ page = 0, size = 10, status, search } = {}) {
+    const response = await this.#api.getPaginated({ page, size, status, search });
+    const data = response.data;
+    return {
+      items:         ServiceOrderSummaryAssembler.toEntities(data.content || []),
+      totalElements: data.totalElements ?? 0,
+      totalPages:    data.totalPages    ?? 0,
+      currentPage:   data.currentPage   ?? page,
+      pageSize:      data.pageSize      ?? size,
+    };
+  }
+
 }
