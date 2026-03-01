@@ -25,6 +25,16 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
     const savedPage        = ref(0);
     const savedSize        = ref(10);
 
+    // Global counts — siempre reflejan totales sin filtros
+    const globalCounts = ref({
+        totalPendientes:          0,
+        totalValidados:           0,
+        totalConforme:            0,
+        totalObservado:           0,
+        totalRechazado:           0,
+        totalEntrevistaArrendador: 0
+    });
+
     // Dependencies
     const notificationService = useNotification();
     const repository          = new ReportHttpRepository();
@@ -69,6 +79,28 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
             totalElements.value    = result.data.totalElements;
             savedPage.value        = page;
             savedSize.value        = size;
+        }
+
+        return result;
+    }
+
+    /**
+     * Obtiene los contadores globales (sin filtros) para mostrar en badges.
+     * Se llama una sola vez al montar la vista; no se actualiza con filtros.
+     * @returns {Promise<Object>} Resultado { success }
+     */
+    async function fetchGlobalCounts() {
+        const result = await fetchPaginatedUseCase.execute({ page: 0, size: 1 });
+
+        if (result.success) {
+            globalCounts.value = {
+                totalPendientes:          result.data.totalPendientes           ?? 0,
+                totalValidados:           result.data.totalValidados            ?? 0,
+                totalConforme:            result.data.totalConforme             ?? 0,
+                totalObservado:           result.data.totalObservado            ?? 0,
+                totalRechazado:           result.data.totalRechazado            ?? 0,
+                totalEntrevistaArrendador: result.data.totalEntrevistaArrendador ?? 0
+            };
         }
 
         return result;
@@ -155,8 +187,10 @@ const useVerificationReportStore = defineStore('verificationReport', () => {
         totalElements,
         savedPage,
         savedSize,
+        globalCounts,
         fetchAll,
         fetchPaginated,
+        fetchGlobalCounts,
         fetchById,
         remove,
         updateLandlordInterview,

@@ -117,7 +117,10 @@ function formatDate(date) {
 }
 
 // ─── Lifecycle ────────────────────────────────────────────────────────────
-onMounted(fetchData);
+onMounted(() => {
+  reportStore.fetchGlobalCounts();
+  fetchData();
+});
 </script>
 
 <template>
@@ -178,6 +181,17 @@ onMounted(fetchData);
                 </div>
                 <span v-else>{{ slotProps.placeholder }}</span>
               </template>
+              <template #option="slotProps">
+                <div class="flex align-items-center justify-content-between w-full gap-3">
+                  <span>{{ slotProps.option.label }}</span>
+                  <span v-if="slotProps.option.value === 'pending'" class="filter-count-badge badge-pendiente">
+                    {{ reportStore.globalCounts.totalPendientes }}
+                  </span>
+                  <span v-else-if="slotProps.option.value === 'validated'" class="filter-count-badge badge-validado">
+                    {{ reportStore.globalCounts.totalValidados }}
+                  </span>
+                </div>
+              </template>
             </pv-dropdown>
 
             <!-- Filtro por resultado final -->
@@ -199,8 +213,20 @@ onMounted(fetchData);
                 <span v-else>{{ slotProps.placeholder }}</span>
               </template>
               <template #option="slotProps">
-                <div class="flex align-items-center justify-content-between w-full">
+                <div class="flex align-items-center justify-content-between w-full gap-3">
                   <span>{{ slotProps.option.label }}</span>
+                  <span v-if="slotProps.option.value === 'CONFORME'" class="filter-count-badge badge-conforme">
+                    {{ reportStore.globalCounts.totalConforme }}
+                  </span>
+                  <span v-else-if="slotProps.option.value === 'OBSERVADO'" class="filter-count-badge badge-observado">
+                    {{ reportStore.globalCounts.totalObservado }}
+                  </span>
+                  <span v-else-if="slotProps.option.value === 'RECHAZADO'" class="filter-count-badge badge-rechazado">
+                    {{ reportStore.globalCounts.totalRechazado }}
+                  </span>
+                  <span v-else-if="slotProps.option.value === 'ENTREVISTA_ARRENDADOR_FALTANTE'" class="filter-count-badge badge-entrevista">
+                    {{ reportStore.globalCounts.totalEntrevistaArrendador }}
+                  </span>
                 </div>
               </template>
             </pv-dropdown>
@@ -242,3 +268,27 @@ onMounted(fetchData);
     </div>
   </div>
 </template>
+
+<style scoped>
+/* ── Badges de conteo en opciones de dropdown ─────────────────────────── */
+.filter-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.badge-conforme   { background: #d1fae5; color: #065f46; }
+.badge-observado  { background: #fef3c7; color: #92400e; }
+.badge-rechazado  { background: #fee2e2; color: #991b1b; }
+.badge-entrevista { background: #ede9fe; color: #5b21b6; }
+.badge-pendiente  { background: #fef3c7; color: #92400e; }
+.badge-validado   { background: #d1fae5; color: #065f46; }
+</style>

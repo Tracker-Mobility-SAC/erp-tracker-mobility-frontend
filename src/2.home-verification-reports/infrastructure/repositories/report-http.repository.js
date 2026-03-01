@@ -38,11 +38,17 @@ export class ReportHttpRepository extends IReportRepository {
     const response = await this.#api.getPaginatedFiltered({ page, size, finalResult, isResultValid, search });
     const data = response.data;
     return {
-      items:         ReportSummaryAssembler.toEntities(data.content || []),
-      totalElements: data.totalElements ?? 0,
-      totalPages:    data.totalPages    ?? 0,
-      currentPage:   data.currentPage   ?? page,
-      pageSize:      data.pageSize      ?? size
+      items:                    ReportSummaryAssembler.toEntities(data.content || []),
+      totalElements:            data.totalElements             ?? 0,
+      totalPages:               data.totalPages                ?? 0,
+      currentPage:              data.currentPage               ?? page,
+      pageSize:                 data.pageSize                  ?? size,
+      totalPendientes:          data.totalPendientes           ?? 0,
+      totalValidados:           data.totalValidados            ?? 0,
+      totalConforme:            data.totalConforme             ?? 0,
+      totalObservado:           data.totalObservado            ?? 0,
+      totalRechazado:           data.totalRechazado            ?? 0,
+      totalEntrevistaArrendador: data.totalEntrevistaArrendador ?? 0
     };
   }
 
