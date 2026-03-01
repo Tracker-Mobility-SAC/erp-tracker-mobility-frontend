@@ -110,9 +110,28 @@ watch(selectedStatus, () => {
   fetchData();
 });
 
+const statusCountMap = {
+  'PENDIENTE':           () => store.globalCounts.totalPendiente,
+  'ASIGNADO':            () => store.globalCounts.totalAsignado,
+  'EN_PROCESO':          () => store.globalCounts.totalEnProceso,
+  'COMPLETADA':          () => store.globalCounts.totalCompletada,
+  'CANCELADA':           () => store.globalCounts.totalCancelada,
+  'OBSERVADO':           () => store.globalCounts.totalObservada,
+  'SUBSANADA':           () => store.globalCounts.totalSubsanada,
+  'ENTREVISTA_FALTANTE': () => store.globalCounts.totalEntrevistaFaltante,
+  'EN_VALIDACION':       () => store.globalCounts.totalEnValidacion,
+};
+
+function getStatusCount(value) {
+  return statusCountMap[value]?.() ?? null;
+}
+
 // ─── Lifecycle ─────────────────────────────────────────────────────────────────
 
-onMounted(fetchData);
+onMounted(() => {
+  store.fetchGlobalCounts({ corporateEmail: authStore.currentUsername });
+  fetchData();
+});
 </script>
 
 <template>
@@ -174,8 +193,14 @@ onMounted(fetchData);
               </template>
               
               <template #option="slotProps">
-                <div class="flex align-items-center justify-content-between w-full gap-2">
+                <div class="flex align-items-center justify-content-between w-full gap-3">
                   <span>{{ slotProps.option.label }}</span>
+                  <span
+                    v-if="slotProps.option.value && getStatusCount(slotProps.option.value) !== null"
+                    :class="['filter-count-badge', `badge-order-${slotProps.option.value.toLowerCase().replace(/_/g, '-')}`]"
+                  >
+                    {{ getStatusCount(slotProps.option.value) }}
+                  </span>
                 </div>
               </template>
             </pv-dropdown>
@@ -228,4 +253,29 @@ onMounted(fetchData);
     padding: 1rem;
   }
 }
+
+/* ── Badges de conteo en opciones de dropdown ─────────────────────────── */
+.filter-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.badge-order-pendiente           { background: #fef3c7; color: #92400e; }
+.badge-order-asignado            { background: #dbeafe; color: #1e40af; }
+.badge-order-en-proceso          { background: #e0e7ff; color: #3730a3; }
+.badge-order-completada          { background: #d1fae5; color: #065f46; }
+.badge-order-cancelada           { background: #fee2e2; color: #991b1b; }
+.badge-order-observado           { background: #ffedd5; color: #9a3412; }
+.badge-order-subsanada           { background: #ccfbf1; color: #065f46; }
+.badge-order-entrevista-faltante { background: #ede9fe; color: #5b21b6; }
+.badge-order-en-validacion        { background: #bfdbfe; color: #1e40af; }
 </style>

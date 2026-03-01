@@ -67,6 +67,19 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
   const savedPage     = ref(0);
   const savedSize     = ref(10);
 
+  // Global counts — siempre reflejan totales sin filtros
+  const globalCounts = ref({
+    totalPendiente:          0,
+    totalAsignado:           0,
+    totalEnProceso:          0,
+    totalCompletada:         0,
+    totalCancelada:          0,
+    totalObservada:          0,
+    totalSubsanada:          0,
+    totalEntrevistaFaltante: 0,
+    totalEnValidacion:       0,
+  });
+
   // Getters
   const progressPercentage = computed(() => {
     return (currentStep.value / totalSteps.value) * 100;
@@ -111,6 +124,32 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
       return errorHandler.handle(err, 'cargar las solicitudes de orden');
     } finally {
       loading.value = false;
+    }
+  }
+
+  /**
+   * Obtiene los contadores globales (sin filtros) para mostrar en badges.
+   * Se llama una sola vez al montar la vista; no se actualiza con filtros.
+   * @param {string} corporateEmail - Email corporativo del ejecutivo
+   * @returns {Promise<Object>} Resultado { success }
+   */
+  async function fetchGlobalCounts({ corporateEmail } = {}) {
+    try {
+      const data = await repository.findPaginatedByCorporateEmail({ corporateEmail, page: 0, size: 1 });
+      globalCounts.value = {
+        totalPendiente:          data.totalPendiente          ?? 0,
+        totalAsignado:           data.totalAsignado           ?? 0,
+        totalEnProceso:          data.totalEnProceso          ?? 0,
+        totalCompletada:         data.totalCompletada         ?? 0,
+        totalCancelada:          data.totalCancelada          ?? 0,
+        totalObservada:          data.totalObservada          ?? 0,
+        totalSubsanada:          data.totalSubsanada          ?? 0,
+        totalEntrevistaFaltante: data.totalEntrevistaFaltante ?? 0,
+        totalEnValidacion:       data.totalEnValidacion       ?? 0,
+      };
+      return { success: true };
+    } catch (err) {
+      return errorHandler.handle(err, 'cargar los contadores globales');
     }
   }
 
@@ -376,6 +415,7 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
     totalElements,
     savedPage,
     savedSize,
+    globalCounts,
     
     // Getters
     progressPercentage,
@@ -384,6 +424,7 @@ export const useOrderRequestStore = defineStore('orderRequest', () => {
     // Actions
     fetchAll,
     fetchPaginated,
+    fetchGlobalCounts,
     fetchApplicantCompanyData,
     createOrder,
     goToNextStep,

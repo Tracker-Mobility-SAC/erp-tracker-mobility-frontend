@@ -15,6 +15,7 @@
     --status-observado: var(--yellow-500);
     --status-subsanada: var(--green-500);
     --status-entrevista-arrendador-faltante: var(--purple-500);
+    --status-en-validacion: var(--primary-200);   /* #BFDBFE — azul claro */
     
     /* Estados específicos para verification-reports */
     --status-conforme: var(--green-500);
@@ -123,6 +124,11 @@
 .status-entrevista-arrendador-faltante {
     background-color: var(--status-entrevista-arrendador-faltante);
     color: var(--text-white);
+}
+
+.status-en-validacion {
+    background-color: var(--status-en-validacion);
+    color: var(--text-black);
 }
 
 .status-entrevista-faltante {

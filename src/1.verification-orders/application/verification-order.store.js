@@ -24,6 +24,19 @@ const useVerificationOrderStore = defineStore('verificationOrder', () => {
     const savedPage = ref(0);
     const savedSize = ref(10);
 
+    // Global counts — always reflect totals without filters
+    const globalCounts = ref({
+        totalPendiente:          0,
+        totalAsignado:           0,
+        totalEnProceso:          0,
+        totalCompletada:         0,
+        totalCancelada:          0,
+        totalObservada:          0,
+        totalSubsanada:          0,
+        totalEntrevistaFaltante: 0,
+        totalEnValidacion:       0,
+    });
+
     // Dependencies
     const orderRepository = new OrderHttpRepository();
     const { showSuccess, showError, showWarning } = useNotification();
@@ -169,6 +182,29 @@ const useVerificationOrderStore = defineStore('verificationOrder', () => {
         return result;
     }
 
+    /**
+     * Obtiene los contadores globales (sin filtros) para mostrar en badges.
+     * Se llama una sola vez al montar la vista; no se actualiza con filtros.
+     * @returns {Promise<Object>} Resultado { success }
+     */
+    async function fetchGlobalCounts() {
+        const result = await fetchPaginatedUseCase.execute({ page: 0, size: 1 });
+        if (result.success) {
+            globalCounts.value = {
+                totalPendiente:          result.data.totalPendiente          ?? 0,
+                totalAsignado:           result.data.totalAsignado           ?? 0,
+                totalEnProceso:          result.data.totalEnProceso          ?? 0,
+                totalCompletada:         result.data.totalCompletada         ?? 0,
+                totalCancelada:          result.data.totalCancelada          ?? 0,
+                totalObservada:          result.data.totalObservada          ?? 0,
+                totalSubsanada:          result.data.totalSubsanada          ?? 0,
+                totalEntrevistaFaltante: result.data.totalEntrevistaFaltante ?? 0,
+                totalEnValidacion:       result.data.totalEnValidacion       ?? 0,
+            };
+        }
+        return result;
+    }
+
     return {
         // State
         orderSummaries,
@@ -176,6 +212,7 @@ const useVerificationOrderStore = defineStore('verificationOrder', () => {
         totalElements,
         savedPage,
         savedSize,
+        globalCounts,
 
         // Actions
         fetchAllSummaries,
@@ -183,6 +220,7 @@ const useVerificationOrderStore = defineStore('verificationOrder', () => {
         assignVerifier,
         createObservation,
         fetchPaginated,
+        fetchGlobalCounts,
     };
 });
 

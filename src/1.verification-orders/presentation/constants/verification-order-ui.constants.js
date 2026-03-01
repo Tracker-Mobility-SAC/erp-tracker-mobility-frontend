@@ -17,7 +17,8 @@ export const OrderStatusTranslations = Object.freeze({
   [OrderStatus.CANCELADA]: 'Cancelada',
   [OrderStatus.OBSERVADO]: 'Observado',
   [OrderStatus.SUBSANADA]: 'Subsanada',
-  [OrderStatus.ENTREVISTA_FALTANTE]: 'Entrevista Faltante'
+  [OrderStatus.ENTREVISTA_FALTANTE]: 'Entrevista Faltante',
+  [OrderStatus.EN_VALIDACION]: 'En Validación'
 });
 
 /**
@@ -32,7 +33,8 @@ export const OrderStatusClasses = Object.freeze({
   [OrderStatus.CANCELADA]: 'status-cancelada',
   [OrderStatus.OBSERVADO]: 'status-observado',
   [OrderStatus.SUBSANADA]: 'status-subsanada',
-  [OrderStatus.ENTREVISTA_FALTANTE]: 'status-entrevista-arrendador-faltante'
+  [OrderStatus.ENTREVISTA_FALTANTE]: 'status-entrevista-arrendador-faltante',
+  [OrderStatus.EN_VALIDACION]: 'status-en-validacion'
 });
 
 /**
@@ -46,7 +48,8 @@ export const OrderStatusIcons = Object.freeze({
   [OrderStatus.CANCELADA]: 'pi pi-times-circle',
   [OrderStatus.OBSERVADO]: 'pi pi-exclamation-triangle',
   [OrderStatus.SUBSANADA]: 'pi pi-check',
-  [OrderStatus.ENTREVISTA_FALTANTE]: 'pi pi-calendar-times'
+  [OrderStatus.ENTREVISTA_FALTANTE]: 'pi pi-calendar-times',
+  [OrderStatus.EN_VALIDACION]: 'pi pi-shield'
 });
 
 /**

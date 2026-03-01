@@ -15,7 +15,8 @@ export const OrderStatus = Object.freeze({
   CANCELADA: 'CANCELADA',                   // Orden cancelada
   OBSERVADO: 'OBSERVADO',                   // Tiene observaciones pendientes (automático)
   SUBSANADA: 'SUBSANADA',                   // Todas las observaciones resueltas (automático)
-  ENTREVISTA_FALTANTE: 'ENTREVISTA_FALTANTE' // Falta entrevista
+  ENTREVISTA_FALTANTE: 'ENTREVISTA_FALTANTE', // Falta entrevista
+  EN_VALIDACION: 'EN_VALIDACION'            // Reporte en proceso de validación
 });
 
 /**

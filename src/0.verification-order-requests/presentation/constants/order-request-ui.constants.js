@@ -16,7 +16,8 @@ export const StatusTranslations = {
   [OrderRequestStatus.CANCELADA]: 'Cancelada',
   [OrderRequestStatus.OBSERVADO]: 'Observado',
   [OrderRequestStatus.SUBSANADA]: 'Subsanada',
-  [OrderRequestStatus.ENTREVISTA_FALTANTE]: 'Entrevista Faltante'
+  [OrderRequestStatus.ENTREVISTA_FALTANTE]: 'Entrevista Faltante',
+  [OrderRequestStatus.EN_VALIDACION]: 'En Validación'
 };
 
 /**
@@ -30,7 +31,8 @@ export const StatusCssClasses = {
   [OrderRequestStatus.CANCELADA]: 'status-cancelada',
   [OrderRequestStatus.OBSERVADO]: 'status-observado',
   [OrderRequestStatus.SUBSANADA]: 'status-subsanada',
-  [OrderRequestStatus.ENTREVISTA_FALTANTE]: 'status-entrevista-arrendador-faltante'
+  [OrderRequestStatus.ENTREVISTA_FALTANTE]: 'status-entrevista-arrendador-faltante',
+  [OrderRequestStatus.EN_VALIDACION]: 'status-en-validacion'
 };
 
 /**

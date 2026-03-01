@@ -69,11 +69,20 @@ export class OrderHttpRepository extends IOrderRepository {
     const response = await this.#api.getPaginated({ page, size, status, search });
     const data = response.data;
     return {
-      items:         ServiceOrderSummaryAssembler.toEntities(data.content || []),
-      totalElements: data.totalElements ?? 0,
-      totalPages:    data.totalPages    ?? 0,
-      currentPage:   data.currentPage   ?? page,
-      pageSize:      data.pageSize      ?? size,
+      items:                   ServiceOrderSummaryAssembler.toEntities(data.content || []),
+      totalElements:           data.totalElements            ?? 0,
+      totalPages:              data.totalPages               ?? 0,
+      currentPage:             data.currentPage              ?? page,
+      pageSize:                data.pageSize                 ?? size,
+      totalPendiente:          data.totalPendiente           ?? 0,
+      totalAsignado:           data.totalAsignado            ?? 0,
+      totalEnProceso:          data.totalEnProceso           ?? 0,
+      totalCompletada:         data.totalCompletada          ?? 0,
+      totalCancelada:          data.totalCancelada           ?? 0,
+      totalObservada:          data.totalObservada           ?? 0,
+      totalSubsanada:          data.totalSubsanada           ?? 0,
+      totalEntrevistaFaltante: data.totalEntrevistaFaltante  ?? 0,
+      totalEnValidacion:       data.totalEnValidacion        ?? 0,
     };
   }
 
