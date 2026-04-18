@@ -30,8 +30,8 @@ const columns = [
   { field: 'clientName',        header: 'Cliente',             sortable: true, style: 'width: 250px;' },
   { field: 'clientPhoneNumber', header: 'Contacto',            sortable: true, template: 'clientPhoneNumber', style: 'width: 130px;' },
   { field: 'requestDate',       header: 'Fecha de Solicitud',  sortable: true, template: 'requestDate',       style: 'width: 150px;' },
-  { field: 'status',            header: 'Estado',              sortable: true, template: 'status',            style: 'width: 150px;' },
-  { field: 'visitDate',         header: 'Fecha Visita',        sortable: true, template: 'visitDate',         style: 'width: 150px;' }
+  { field: 'visitDate',         header: 'Fecha Visita',        sortable: true, template: 'visitDate',         style: 'width: 150px;' },
+  { field: 'status',            header: 'Estado',              sortable: true, template: 'status',            style: 'width: 150px;' }
 ];
 
 const statusOptions = StatusFilterOptions;

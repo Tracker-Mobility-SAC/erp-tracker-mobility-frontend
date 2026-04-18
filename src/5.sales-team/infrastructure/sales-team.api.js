@@ -34,26 +34,23 @@ export class SalesTeamApi extends BaseApi {
     }
 
     /**
-     * Obtiene las órdenes de un empleado específico.
-     * TODO: Implementar cuando se defina el endpoint
-     * @param {string|number} employeeId - El ID del empleado.
-     * @returns {Promise} Una promesa que se resuelve con las órdenes del empleado.
+     * Obtiene las órdenes paginadas de un ejecutivo por su email corporativo.
+     * GET /web/orders/corporateEmail/{corporateEmail}/paginated
+     * @param {Object} params
+     * @param {string} params.corporateEmail - Email corporativo del ejecutivo (vendedor)
+     * @param {number} [params.page=0] - Página (0-indexed)
+     * @param {number} [params.size=10] - Elementos por página
+     * @param {string} [params.status] - Filtro por estado
+     * @param {string} [params.search] - Búsqueda por orderCode, clientName o phoneNumber
+     * @returns {Promise}
      */
-    getEmployeeOrders(employeeId) {
-        // TODO: Reemplazar con el endpoint real cuando esté disponible
-        console.log('[TODO] Implementar getEmployeeOrders para employeeId:', employeeId);
-        return Promise.resolve({ data: [] });
-    }
-
-    /**
-     * Obtiene el detalle de una orden específica.
-     * TODO: Implementar cuando se defina el endpoint
-     * @param {string|number} orderId - El ID de la orden.
-     * @returns {Promise} Una promesa que se resuelve con el detalle de la orden.
-     */
-    getOrderDetail(orderId) {
-        // TODO: Reemplazar con el endpoint real cuando esté disponible
-        console.log('[TODO] Implementar getOrderDetail para orderId:', orderId);
-        return Promise.resolve({ data: {} });
+    getOrdersByCorporateEmailPaginated({ corporateEmail, page = 0, size = 10, status, search } = {}) {
+        const params = { page, size };
+        if (status) params.status = status;
+        if (search?.trim()) params.search = search.trim();
+        return this.http.get(
+            `/web/orders/corporateEmail/${encodeURIComponent(corporateEmail)}/paginated`,
+            { params }
+        );
     }
 }

@@ -1,6 +1,9 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { SalesTeamHttpRepository } from '../infrastructure/repositories/sales-team-http.repository.js';
+import { SalesTeamErrorHandler } from './error-handlers/sales-team.error-handler.js';
+import { FetchEmployeeOrdersUseCase } from './use-cases/fetch-employee-orders.use-case.js';
+import { useNotification } from '../../shared-v2/composables/use-notification.js';
 import { useAuthenticationStore } from '../../6.security/application/authentication.store.js';
 
 const repository = new SalesTeamHttpRepository();
@@ -10,6 +13,10 @@ const repository = new SalesTeamHttpRepository();
  * Solo accesible para usuarios con rol GERENTE_VENTAS
  */
 export const useSalesTeamStore = defineStore('salesTeam', () => {
+    // Dependencies
+    const { showSuccess, showError, showWarning } = useNotification();
+    const errorHandler = new SalesTeamErrorHandler({ showSuccess, showError, showWarning });
+    const fetchEmployeeOrdersUseCase = new FetchEmployeeOrdersUseCase(repository, errorHandler);
     // ===========================
     // STATE
     // ===========================
@@ -18,7 +25,10 @@ export const useSalesTeamStore = defineStore('salesTeam', () => {
     const currentEmployee = ref(null); // Empleado autenticado (gerente)
     const salesTeam = ref([]); // Lista de vendedores a cargo
     const selectedEmployee = ref(null); // Vendedor seleccionado
-    const employeeOrders = ref([]); // Órdenes del vendedor seleccionado
+    const employeeOrders = ref([]); // Órdenes paginadas del vendedor seleccionado
+    const totalOrderElements = ref(0); // Total de órdenes (server-side)
+    const savedOrderPage = ref(0); // Última página visitada
+    const savedOrderSize = ref(10); // Último tamaño de página
     const selectedOrder = ref(null); // Orden seleccionada para ver detalles
 
     // ===========================
@@ -103,62 +113,31 @@ export const useSalesTeamStore = defineStore('salesTeam', () => {
     }
 
     /**
-     * Obtiene las órdenes de un vendedor específico
-     * @param {number} employeeId - ID del vendedor
+     * Obtiene las órdenes paginadas de un vendedor por su email corporativo.
+     * @param {Object} params
+     * @param {string} params.corporateEmail - Email corporativo del vendedor
+     * @param {number} [params.page=0] - Página (0-indexed)
+     * @param {number} [params.size=10] - Elementos por página
+     * @param {string} [params.status] - Filtro por estado
+     * @param {string} [params.search] - Búsqueda
      */
-    async function fetchEmployeeOrders(employeeId) {
+    async function fetchEmployeeOrders({ corporateEmail, page = 0, size = 10, status, search } = {}) {
         loading.value = true;
         error.value = null;
-        
-        try {
-            // TODO: Implementar llamada al endpoint
-            console.log(`📦 [SalesTeamStore] Fetching orders for employee ${employeeId}...`);
-            
-            // Placeholder
-            employeeOrders.value = [];
-            
-            return {
-                success: true,
-                data: employeeOrders.value
-            };
-        } catch (err) {
-            error.value = err;
-            console.error('❌ [SalesTeamStore] Error fetching employee orders:', err);
-            return {
-                success: false,
-                error: err
-            };
-        } finally {
-            loading.value = false;
-        }
-    }
 
-    /**
-     * Obtiene los detalles de una orden específica
-     * @param {number} orderId - ID de la orden
-     */
-    async function fetchOrderDetail(orderId) {
-        loading.value = true;
-        error.value = null;
-        
         try {
-            // TODO: Implementar llamada al endpoint
-            console.log(`🔍 [SalesTeamStore] Fetching order detail ${orderId}...`);
-            
-            // Placeholder
-            selectedOrder.value = null;
-            
-            return {
-                success: true,
-                data: selectedOrder.value
-            };
-        } catch (err) {
-            error.value = err;
-            console.error('❌ [SalesTeamStore] Error fetching order detail:', err);
-            return {
-                success: false,
-                error: err
-            };
+            const result = await fetchEmployeeOrdersUseCase.execute({ corporateEmail, page, size, status, search });
+
+            if (result.success) {
+                employeeOrders.value     = result.data.items;
+                totalOrderElements.value = result.data.totalElements;
+                savedOrderPage.value     = page;
+                savedOrderSize.value     = size;
+            } else {
+                error.value = result.message;
+            }
+
+            return result;
         } finally {
             loading.value = false;
         }
@@ -180,6 +159,9 @@ export const useSalesTeamStore = defineStore('salesTeam', () => {
         salesTeam.value = [];
         selectedEmployee.value = null;
         employeeOrders.value = [];
+        totalOrderElements.value = 0;
+        savedOrderPage.value = 0;
+        savedOrderSize.value = 10;
         selectedOrder.value = null;
         error.value = null;
     }
@@ -188,10 +170,13 @@ export const useSalesTeamStore = defineStore('salesTeam', () => {
         // State
         loading,
         error,
-        currentEmployee, // ✅ Exportar el empleado actual (gerente)
+        currentEmployee,
         salesTeam,
         selectedEmployee,
         employeeOrders,
+        totalOrderElements,
+        savedOrderPage,
+        savedOrderSize,
         selectedOrder,
         
         // Getters
@@ -202,7 +187,6 @@ export const useSalesTeamStore = defineStore('salesTeam', () => {
         // Actions
         fetchSalesTeam,
         fetchEmployeeOrders,
-        fetchOrderDetail,
         selectEmployee,
         clearState
     };

@@ -1,14 +1,17 @@
+import { ISalesTeamRepository } from "../../domain/repositories/sales-team.repository.interface.js";
 import { SalesTeamApi } from "../sales-team.api.js";
 import { SalesTeamAssembler } from "../assemblers/sales-team.assembler.js";
+import { EmployeeOrderSummaryAssembler } from "../assemblers/employee-order-summary.assembler.js";
 
 /**
  * Repositorio HTTP para el equipo de ventas.
- * Implementa la interfaz del dominio usando la API.
+ * Implementa la interfaz del dominio usando la API (Adaptador en Arquitectura Hexagonal).
  */
-export class SalesTeamHttpRepository {
+export class SalesTeamHttpRepository extends ISalesTeamRepository {
     #api;
 
     constructor() {
+        super();
         this.#api = new SalesTeamApi();
     }
 
@@ -62,32 +65,33 @@ export class SalesTeamHttpRepository {
     }
 
     /**
-     * Obtiene las órdenes de un empleado.
-     * @param {number} employeeId - ID del empleado.
-     * @returns {Promise<Array>} Lista de órdenes del empleado.
+     * Obtiene las órdenes paginadas de un vendedor por su email corporativo.
+     * @param {Object} params
+     * @param {string} params.corporateEmail - Email corporativo del vendedor
+     * @param {number} [params.page=0] - Página (0-indexed)
+     * @param {number} [params.size=10] - Elementos por página
+     * @param {string} [params.status] - Filtro por estado
+     * @param {string} [params.search] - Búsqueda por orderCode, clientName o phoneNumber
+     * @returns {Promise<{items, totalElements, totalPages, currentPage, pageSize, ...counts}>}
      */
-    async getEmployeeOrders(employeeId) {
-        try {
-            const response = await this.#api.getEmployeeOrders(employeeId);
-            return response.data;
-        } catch (error) {
-            console.error('[SalesTeamRepository] Error al obtener órdenes del empleado:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Obtiene el detalle de una orden.
-     * @param {number} orderId - ID de la orden.
-     * @returns {Promise<Object>} Detalle de la orden.
-     */
-    async getOrderDetail(orderId) {
-        try {
-            const response = await this.#api.getOrderDetail(orderId);
-            return response.data;
-        } catch (error) {
-            console.error('[SalesTeamRepository] Error al obtener detalle de orden:', error);
-            throw error;
-        }
+    async findOrdersByCorporateEmailPaginated({ corporateEmail, page = 0, size = 10, status, search } = {}) {
+        const response = await this.#api.getOrdersByCorporateEmailPaginated({ corporateEmail, page, size, status, search });
+        const data = response.data;
+        return {
+            items:                   EmployeeOrderSummaryAssembler.toEntities(data.content || []),
+            totalElements:           data.totalElements            ?? 0,
+            totalPages:              data.totalPages               ?? 0,
+            currentPage:             data.currentPage              ?? page,
+            pageSize:                data.pageSize                 ?? size,
+            totalPendiente:          data.totalPendiente           ?? 0,
+            totalAsignado:           data.totalAsignado            ?? 0,
+            totalEnProceso:          data.totalEnProceso           ?? 0,
+            totalCompletada:         data.totalCompletada          ?? 0,
+            totalCancelada:          data.totalCancelada           ?? 0,
+            totalObservada:          data.totalObservada           ?? 0,
+            totalSubsanada:          data.totalSubsanada           ?? 0,
+            totalEntrevistaFaltante: data.totalEntrevistaFaltante  ?? 0,
+            totalEnValidacion:       data.totalEnValidacion        ?? 0,
+        };
     }
 }

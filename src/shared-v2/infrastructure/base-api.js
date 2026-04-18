@@ -2,7 +2,7 @@ import axios from "axios";
 import {authenticationInterceptor, authenticationResponseInterceptor, authenticationErrorInterceptor} from "../../6.security/infrastructure/authentication.interceptor.js";
 
 
-const platformApi = import.meta.env.VITE_API_BASE_URL;
+const platformApi = import.meta.env.VITE_API_BASE_URL || "https://web-service-tracker-mobility-c6uu5.ondigitalocean.app/api/v1";
 
 /**
  * @class BaseApi

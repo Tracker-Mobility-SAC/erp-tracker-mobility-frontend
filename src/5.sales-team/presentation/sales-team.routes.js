@@ -5,7 +5,7 @@
  */
 import SalesTeamList from './views/sales-team-list.vue';
 import EmployeeOrders from './views/employee-orders.vue';
-import OrderDetail from './views/order-detail.vue';
+import OrderDetail from './views/order-detail-team-sales.vue';
 
 export const salesTeamRoutes = [
     {
